@@ -14,7 +14,12 @@ export const ROUTES: RouteInfo[] = [
 
     { path: '/user-profile', title: 'User Profile',  icon:'users_single-02', class: '' },
     { path: '/table-list', title: 'Table List',  icon:'design_bullet-list-67', class: '' },
-    { path: '/typography', title: 'Typography',  icon:'text_caps-small', class: '' }
+    { path: '/typography', title: 'Typography',  icon:'text_caps-small', class: '' },
+    { path: '/clans', title: 'Clans',  icon:'users_single-02', class: '' },
+    { path: '/players', title: 'Players',  icon:'users_single-02', class: '' },
+    { path: '/tournaments', title: 'Tournaments',  icon:'users_single-02', class: '' },
+    { path: '/cards', title: 'Cards',  icon:'users_single-02', class: '' },
+    { path: '/locations', title: 'Locations',  icon:'location_map-big', class: '' },
 ];
 
 @Component({

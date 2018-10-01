@@ -8,6 +8,12 @@ import { IconsComponent } from '../../icons/icons.component';
 import { MapsComponent } from '../../maps/maps.component';
 import { NotificationsComponent } from '../../notifications/notifications.component';
 
+import { ClansComponent } from '../../clans/clans.component';
+import { PlayersComponent } from '../../players/players.component';
+import { TournamentsComponent } from '../../tournaments/tournaments.component';
+import { CardsComponent } from '../../cards/cards.component';
+import { LocationsComponent } from '../../locations/locations.component';
+
 export const AdminLayoutRoutes: Routes = [
     { path: 'dashboard',      component: DashboardComponent },
     { path: 'user-profile',   component: UserProfileComponent },
@@ -16,4 +22,9 @@ export const AdminLayoutRoutes: Routes = [
     { path: 'icons',          component: IconsComponent },
     { path: 'maps',           component: MapsComponent },
     { path: 'notifications',  component: NotificationsComponent },
+    { path: 'clans',  component: ClansComponent },
+    { path: 'players',  component: PlayersComponent },
+    { path: 'tournaments',  component: TournamentsComponent },
+    { path: 'cards',  component: CardsComponent },
+    { path: 'locations',  component: LocationsComponent },
 ];
