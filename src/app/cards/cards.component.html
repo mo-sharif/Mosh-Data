@@ -2,27 +2,10 @@
 </div>
 <div class="main-content">
   <div class="row">
-    <div class="col-md-4"  *ngFor="let card of cards">
-      <div class="card" [style.backgroundImage]="'url('+ card.iconUrls.medium +')'">
-        <div class="card-header">
-          <h5 class="title">{{card.name}}</h5>
-          <p class="category"></p>
-        </div>
-        <div class="card-body">
-          <div class="typography-line">
-            <span>Danger Text</span>
-            <p class="text-danger">
-              I will be the leader of a company that ends up being worth billions of dollars, because I got the answers... </p>
-          </div>
-          <div class="typography-line">
-            <h2>
-              <span>Small Tag</span>
-              Header with small subtitle
-              <br>
-              <small>Use "small" tag for the headers</small>
-            </h2>
-          </div>
-        </div>
+    <div class="col-md-2"  *ngFor="let card of cards">
+      <div class="card clashCard zoom-background" 
+      [style.backgroundImage]="'url('+ card.iconUrls.medium +')'">
+        <h5 class="card-header">{{card.name}}</h5>
       </div>
     </div>
   </div>

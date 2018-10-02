@@ -1,3 +1,35 @@
+.clashCard{
+    background: transparent;
+    box-shadow: none !important;
+    height: 145px;
+background-size: contain;
+background-repeat: no-repeat;
+.card-header{
+    opacity: 0;
+&:hover{
+    opacity: 1;
+}
+
+}
+
+}
+.cardFlex{display: flex !important;
+}
+
+
+
+.zoom-background {
+    transition: transform 0.3s ease-in-out;
+  
+    &:hover {
+      @extend .zoom-background-hover;
+    }
+  }
+  
+  .zoom-background-hover {
+    transform: scale(1.05);
+    transition-duration: 0.2s;
+  }
 .card{
     border: 0;
     border-radius: $border-radius-small;
