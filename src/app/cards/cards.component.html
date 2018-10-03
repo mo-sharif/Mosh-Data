@@ -13,8 +13,6 @@
 </div>
 -->
 
-
-
 <div class="main-content">
     <div class="row">
       <div class="col-md-12">
@@ -32,8 +30,8 @@
               <div class="row">
                 <div class="col-lg-8 ml-auto mr-auto">
                   <div class="row">
-                    <div class="col-md-3" *ngFor="let card of cards">
-                      <img class="zoom-background clashCard" [src]="card.iconUrls.medium" (click)="showNotification('bottom','left')" />{{card.name}}
+                    <div class="col-md-3  text-center" *ngFor="let card of cards">
+                      <img class="zoom-background clashCard" [src]="card.iconUrls.medium" (click)="showNotification('bottom','left')" /><p class="">{{card.name}}</p>
                     </div>
                   </div>
                 </div>

@@ -26,6 +26,7 @@ import { LocationsComponent } from '../../locations/locations.component';
     FormsModule,
     ChartsModule,
     NgbModule,
+    ReactiveFormsModule,
     ToastrModule.forRoot()
   ],
   declarations: [
