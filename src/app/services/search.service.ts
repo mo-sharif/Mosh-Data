@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
+import {ItemsComponent} from '../classes/items/items.component'
+
 @Injectable()
 export class SearchService {
 
   apiRoot:string = 'https://itunes.apple.com/search';
-  results:Object[];
+  results:ItemsComponent[];
   loading:boolean;
 
   constructor(private http:Http) { 
@@ -21,7 +23,15 @@ export class SearchService {
         .toPromise()
         .then(
           res => { // Success
-          this.results = res.json().results;
+            this.results = res.json().results.map(item => { 
+              return new ItemsComponent(
+                  item.trackName,
+                  item.artistName,
+                  item.trackViewUrl,
+                  item.artworkUrl30,
+                  item.artistId
+              );
+            });
           resolve();
           },
           msg => { // Error

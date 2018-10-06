@@ -19,15 +19,18 @@
                   </div>
                 </div>
               </form>
-          <ul class="list-group">
-            <li class="list-group-item"
-                *ngFor="let track of itunes.results">
-              <img src="{{track.artworkUrl30}}">
-              <a target="_blank"
-                 href="{{track.trackViewUrl}}">{{ track.trackName }}
-              </a>
-            </li>
-          </ul>
+              <div class="text-center">
+                  <p class="lead" *ngIf="loading">Loading...</p>
+                </div>                
+                <ul class="list-group">
+                    <li class="list-group-item"
+                        *ngFor="let track of itunes.results">
+                      <img src="{{track.thumbnail}}">
+                      <a target="_blank"
+                         href="{{track.link}}">{{ track.name }}
+                      </a>
+                    </li>
+                  </ul>
         </div>
       </div>
     </div>

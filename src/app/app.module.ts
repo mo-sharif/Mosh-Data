@@ -11,7 +11,8 @@ import { ComponentsModule } from './components/components.module';
 
 import { AppComponent } from './app.component';
 import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.component';
-import { SearchService } from './services/search.service'
+import { SearchService } from './services/search.service';
+import { ItemsComponent } from './classes/items/items.component'
 
 @NgModule({
   imports: [
@@ -26,6 +27,7 @@ import { SearchService } from './services/search.service'
   declarations: [
     AppComponent,
     AdminLayoutComponent,
+    ItemsComponent,
 
   ],
   providers: [SearchService],
