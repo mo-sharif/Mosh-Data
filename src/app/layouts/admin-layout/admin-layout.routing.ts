@@ -8,7 +8,7 @@ import { IconsComponent } from '../../icons/icons.component';
 import { MapsComponent } from '../../maps/maps.component';
 import { NotificationsComponent } from '../../notifications/notifications.component';
 
-import { ClansComponent } from '../../clans/clans.component';
+import { MusicComponent } from '../../music/music.component';
 import { PlayersComponent } from '../../players/players.component';
 import { TournamentsComponent } from '../../tournaments/tournaments.component';
 import { CardsComponent } from '../../cards/cards.component';
@@ -22,7 +22,7 @@ export const AdminLayoutRoutes: Routes = [
     { path: 'icons',          component: IconsComponent },
     { path: 'maps',           component: MapsComponent },
     { path: 'notifications',  component: NotificationsComponent },
-    { path: 'clans',  component: ClansComponent },
+    { path: 'music',  component: MusicComponent },
     { path: 'players',  component: PlayersComponent },
     { path: 'tournaments',  component: TournamentsComponent },
     { path: 'cards',  component: CardsComponent },

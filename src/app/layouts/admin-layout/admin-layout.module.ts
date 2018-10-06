@@ -13,12 +13,11 @@ import { NotificationsComponent } from '../../notifications/notifications.compon
 import { ChartsModule } from 'ng2-charts';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrModule } from 'ngx-toastr';
-import { ClansComponent } from '../../clans/clans.component';
+import { MusicComponent } from '../../music/music.component';
 import { PlayersComponent } from '../../players/players.component';
 import { TournamentsComponent } from '../../tournaments/tournaments.component';
 import { CardsComponent } from '../../cards/cards.component';
 import { LocationsComponent } from '../../locations/locations.component';
-
 @NgModule({
   imports: [
     CommonModule,
@@ -37,7 +36,7 @@ import { LocationsComponent } from '../../locations/locations.component';
     IconsComponent,
     MapsComponent,
     NotificationsComponent,
-    ClansComponent,
+    MusicComponent,
     PlayersComponent,
     TournamentsComponent,
     CardsComponent,

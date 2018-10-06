@@ -1,0 +1,35 @@
+<div class="panel-header panel-header-sm">
+</div>
+<div class="main-content">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="title">Music search</h5>
+          <p class="category">Search iTunes library</p>
+        </div>
+        <div class="card-body">
+            <form>
+                <div class="input-group no-border">
+                  <input type="search" #search class="form-control" placeholder="Search..." (keyup)="doSearch(search.value)">
+                  <div class="input-group-append">
+                    <div class="input-group-text">
+                      <i class="now-ui-icons ui-1_zoom-bold"></i>
+                    </div>
+                  </div>
+                </div>
+              </form>
+          <ul class="list-group">
+            <li class="list-group-item"
+                *ngFor="let track of itunes.results">
+              <img src="{{track.artworkUrl30}}">
+              <a target="_blank"
+                 href="{{track.trackViewUrl}}">{{ track.trackName }}
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
