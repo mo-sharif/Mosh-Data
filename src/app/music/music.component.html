@@ -11,7 +11,7 @@
         <div class="card-body">
             <form>
                 <div class="input-group no-border">
-                  <input type="search" #search class="form-control" placeholder="Search..." (keyup)="doSearch(search.value)">
+                  <input type="search" class="form-control" placeholder="Search..." [formControl]="searchField">
                   <div class="input-group-append">
                     <div class="input-group-text">
                       <i class="now-ui-icons ui-1_zoom-bold"></i>
@@ -22,15 +22,25 @@
               <div class="text-center">
                   <p class="lead" *ngIf="loading">Loading...</p>
                 </div>                
-                <ul class="list-group">
-                    <li class="list-group-item"
-                        *ngFor="let track of itunes.results">
+                 <div class="table-responsive">
+            <table class="table">
+              <tbody>
+                <tr *ngFor="let track of results | async">
+                  <td>
                       <img src="{{track.thumbnail}}">
-                      <a target="_blank"
-                         href="{{track.link}}">{{ track.name }}
-                      </a>
-                    </li>
-                  </ul>
+                  </td>
+                  <td>
+                   <a target="_blank"
+                      href="{{track.link}}">{{track.track}}
+                   </a> 
+                  </td>
+                  <td class="text-right">
+                      <p> by {{track.artist}}</p>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>

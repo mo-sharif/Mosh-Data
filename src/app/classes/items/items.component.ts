@@ -8,12 +8,13 @@ import { Component, OnInit } from '@angular/core';
 export class ItemsComponent implements OnInit {
 
   constructor(
-              public name: string,
-              public artist: string,
-              public link: string,
-              public thumbnail: string,
-              public artistId: string
-  ) { }
+    public track: string,
+    public artist: string,
+    public link: string,
+    public thumbnail: string,
+    public artistId: string
+  ) {}
+
 
   ngOnInit() {
   }

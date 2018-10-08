@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, FormControl  } from '@angular/forms';
 import { Validators } from '@angular/forms';
+import { DefaultImgPipe } from '../pipes/default-img.pipe'
 
 @Component({
   selector: 'app-user-profile',
@@ -10,7 +11,7 @@ import { Validators } from '@angular/forms';
 export class UserProfileComponent implements OnInit {
   formElements: any;
   formattedMessage: string;
-
+  imageUrl: string = "";
   userForm = this.fb.group({
     firstName: ['Mosh', Validators.required],
     lastName: ['Bubbah', Validators.required],
@@ -24,7 +25,7 @@ export class UserProfileComponent implements OnInit {
   });
  
 
-  constructor(private fb: FormBuilder)  { }
+  constructor(private fb: FormBuilder,private defaultImg: DefaultImgPipe)  { }
 
   ngOnInit() {
    this.formElements =  JSON.parse(localStorage.getItem("userForm"));

@@ -18,6 +18,7 @@ import { PlayersComponent } from '../../players/players.component';
 import { TournamentsComponent } from '../../tournaments/tournaments.component';
 import { CardsComponent } from '../../cards/cards.component';
 import { LocationsComponent } from '../../locations/locations.component';
+import { DefaultImgPipe } from "../../pipes/default-img.pipe";
 @NgModule({
   imports: [
     CommonModule,
@@ -36,12 +37,13 @@ import { LocationsComponent } from '../../locations/locations.component';
     IconsComponent,
     MapsComponent,
     NotificationsComponent,
-    MusicComponent,
+    MusicComponent,DefaultImgPipe,
     PlayersComponent,
     TournamentsComponent,
     CardsComponent,
     LocationsComponent
-  ]
+  ],
+  providers: [DefaultImgPipe]
 })
 
 export class AdminLayoutModule {}

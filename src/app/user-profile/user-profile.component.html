@@ -88,12 +88,12 @@
     <div class="col-md-4">
       <div class="card card-user">
         <div class="image">
-          <img src="../assets/img/bg5.jpg" alt="...">
+          <img src="https://picsum.photos/400/300/?random" alt="...">
         </div>
         <div class="card-body">
           <div class="author">
             <a href="#">
-              <img class="avatar border-gray" src="../assets/img/mike.jpg" alt="...">
+              <img class="avatar border-gray" [src]="imageUrl | defaultImg:'https://picsum.photos/200/300/?random':true" alt="...">
               <h5 class="title">Mike Andrew</h5>
             </a>
             <p class="description">
