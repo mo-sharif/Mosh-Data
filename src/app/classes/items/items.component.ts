@@ -5,18 +5,15 @@ import { Component, OnInit } from '@angular/core';
   templateUrl: './items.component.html',
   styleUrls: ['./items.component.scss']
 })
-export class ItemsComponent implements OnInit {
+export class ItemsComponent {
 
   constructor(
-    public track: string,
-    public artist: string,
-    public link: string,
-    public thumbnail: string,
-    public artistId: string
+    public track: string = '',
+    public artist: string = '',
+    public link: string = '',
+    public thumbnail: string = '',
+    public artistId: string = ''
   ) {}
 
-
-  ngOnInit() {
-  }
 
 }
