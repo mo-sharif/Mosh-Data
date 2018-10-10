@@ -1,4 +1,16 @@
-<h2>Clash Royale Decks</h2>
+## Angular Responsive 
+
+## Features
+
+- Dashboard Controls
+- iTunes music search
+- Clash Royale deck
+
+## Current projects
+
+- [ ] Finish search for website data.
+- [ ] Store user form submitions.
+- [ ] Save profile to database.
 
 ## Links:
 COMMING SOON
