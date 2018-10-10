@@ -11,11 +11,6 @@ const DEFAULT_WEBSOCKET_CONFIG = {
     serializer: (value) => JSON.stringify(value),
 };
 const WEBSOCKETSUBJECT_INVALID_ERROR_OBJECT = 'WebSocketSubject.error must be called with an object with an error code, and an optional reason: { code: number, reason: string }';
-/**
- * We need this JSDoc comment for affecting ESDoc.
- * @extends {Ignored}
- * @hide true
- */
 export class WebSocketSubject extends AnonymousSubject {
     constructor(urlConfigOrSource, destination) {
         super();
@@ -25,7 +20,6 @@ export class WebSocketSubject extends AnonymousSubject {
         }
         else {
             const config = this._config = Object.assign({}, DEFAULT_WEBSOCKET_CONFIG);
-            config.WebSocketCtor = WebSocket;
             this._output = new Subject();
             if (typeof urlConfigOrSource === 'string') {
                 config.url = urlConfigOrSource;
@@ -37,7 +31,10 @@ export class WebSocketSubject extends AnonymousSubject {
                     }
                 }
             }
-            if (!config.WebSocketCtor) {
+            if (!config.WebSocketCtor && WebSocket) {
+                config.WebSocketCtor = WebSocket;
+            }
+            else if (!config.WebSocketCtor) {
                 throw new Error('no WebSocket constructor can be found');
             }
             this.destination = new ReplaySubject();
@@ -56,24 +53,6 @@ export class WebSocketSubject extends AnonymousSubject {
         }
         this._output = new Subject();
     }
-    /**
-     * Creates an {@link Observable}, that when subscribed to, sends a message,
-     * defined be the `subMsg` function, to the server over the socket to begin a
-     * subscription to data over that socket. Once data arrives, the
-     * `messageFilter` argument will be used to select the appropriate data for
-     * the resulting Observable. When teardown occurs, either due to
-     * unsubscription, completion or error, a message defined by the `unsubMsg`
-     * argument will be send to the server over the WebSocketSubject.
-     *
-     * @param subMsg A function to generate the subscription message to be sent to
-     * the server. This will still be processed by the serializer in the
-     * WebSocketSubject's config. (Which defaults to JSON serialization)
-     * @param unsubMsg A function to generate the unsubscription message to be
-     * sent to the server at teardown. This will still be processed by the
-     * serializer in the WebSocketSubject's config.
-     * @param messageFilter A predicate for selecting the appropriate messages
-     * from the server for the output stream.
-     */
     multiplex(subMsg, unsubMsg, messageFilter) {
         const self = this;
         return new Observable((observer) => {
@@ -196,7 +175,6 @@ export class WebSocketSubject extends AnonymousSubject {
             }
         };
     }
-    /** @deprecated This is an internal implementation detail, do not use. */
     _subscribe(subscriber) {
         const { source } = this;
         if (source) {
@@ -205,9 +183,8 @@ export class WebSocketSubject extends AnonymousSubject {
         if (!this._socket) {
             this._connectSocket();
         }
-        let subscription = new Subscription();
-        subscription.add(this._output.subscribe(subscriber));
-        subscription.add(() => {
+        this._output.subscribe(subscriber);
+        subscriber.add(() => {
             const { _socket } = this;
             if (this._output.observers.length === 0) {
                 if (_socket && _socket.readyState === 1) {
@@ -216,7 +193,7 @@ export class WebSocketSubject extends AnonymousSubject {
                 this._resetState();
             }
         });
-        return subscription;
+        return subscriber;
     }
     unsubscribe() {
         const { source, _socket } = this;

@@ -110,9 +110,11 @@ export class AjaxObservable<T> extends Observable<T> {
    * Creates an observable for an Ajax request with either a request object with
    * url, headers, etc or a string for a URL.
    *
-   * @example
+   * ## Example
+   * ```javascript
    * source = Rx.Observable.ajax('/products');
    * source = Rx.Observable.ajax({ url: 'products', method: 'GET' });
+   * ```
    *
    * @param {string|Object} request Can be one of the following:
    *   A string of the URL to make the Ajax call.
@@ -219,8 +221,11 @@ export class AjaxSubscriber<T> extends Subscriber<Event> {
     this.done = true;
     const { xhr, request, destination } = this;
     const response = new AjaxResponse(e, xhr, request);
-
-    destination.next(response);
+    if (response.response === errorObject) {
+      destination.error(errorObject.e);
+    } else {
+      destination.next(response);
+    }
   }
 
   private send(): XMLHttpRequest {
@@ -318,7 +323,12 @@ export class AjaxSubscriber<T> extends Subscriber<Event> {
       if (progressSubscriber) {
         progressSubscriber.error(e);
       }
-      subscriber.error(new AjaxTimeoutError(this, request)); //TODO: Make betterer.
+      const ajaxTimeoutError = new AjaxTimeoutError(this, request); //TODO: Make betterer.
+      if (ajaxTimeoutError.response === errorObject) {
+        subscriber.error(errorObject.e);
+      } else {
+        subscriber.error(ajaxTimeoutError);
+      }
     }
     xhr.ontimeout = xhrTimeout;
     (<any>xhrTimeout).request = request;
@@ -338,13 +348,18 @@ export class AjaxSubscriber<T> extends Subscriber<Event> {
         }
         (<any>xhrProgress).progressSubscriber = progressSubscriber;
       }
-      let xhrError: (e: ErrorEvent) => void;
+      let xhrError: (e: any) => void;
       xhrError = function(this: XMLHttpRequest, e: ErrorEvent) {
         const { progressSubscriber, subscriber, request } = (<any>xhrError);
         if (progressSubscriber) {
           progressSubscriber.error(e);
         }
-        subscriber.error(new AjaxError('ajax error', this, request));
+        const ajaxError = new AjaxError('ajax error', this, request);
+        if (ajaxError.response === errorObject) {
+          subscriber.error(errorObject.e);
+        } else {
+          subscriber.error(ajaxError);
+        }
       };
       xhr.onerror = xhrError;
       (<any>xhrError).request = request;
@@ -353,7 +368,15 @@ export class AjaxSubscriber<T> extends Subscriber<Event> {
     }
 
     function xhrReadyStateChange(this: XMLHttpRequest, e: Event) {
-      const { subscriber, progressSubscriber, request } = (<any>xhrReadyStateChange);
+      return;
+    }
+    xhr.onreadystatechange = xhrReadyStateChange;
+    (<any>xhrReadyStateChange).subscriber = this;
+    (<any>xhrReadyStateChange).progressSubscriber = progressSubscriber;
+    (<any>xhrReadyStateChange).request = request;
+
+    function xhrLoad(this: XMLHttpRequest, e: Event) {
+      const { subscriber, progressSubscriber, request } = (<any>xhrLoad);
       if (this.readyState === 4) {
         // normalize IE9 bug (http://bugs.jquery.com/ticket/1450)
         let status: number = this.status === 1223 ? 204 : this.status;
@@ -378,14 +401,19 @@ export class AjaxSubscriber<T> extends Subscriber<Event> {
           if (progressSubscriber) {
             progressSubscriber.error(e);
           }
-          subscriber.error(new AjaxError('ajax error ' + status, this, request));
+          const ajaxError = new AjaxError('ajax error ' + status, this, request);
+          if (ajaxError.response === errorObject) {
+            subscriber.error(errorObject.e);
+          } else {
+            subscriber.error(ajaxError);
+          }
         }
       }
     }
-    xhr.onreadystatechange = xhrReadyStateChange;
-    (<any>xhrReadyStateChange).subscriber = this;
-    (<any>xhrReadyStateChange).progressSubscriber = progressSubscriber;
-    (<any>xhrReadyStateChange).request = request;
+    xhr.onload = xhrLoad;
+    (<any>xhrLoad).subscriber = this;
+    (<any>xhrLoad).progressSubscriber = progressSubscriber;
+    (<any>xhrLoad).request = request;
   }
 
   unsubscribe() {
@@ -424,6 +452,8 @@ export class AjaxResponse {
   }
 }
 
+export type AjaxErrorNames = 'AjaxError' | 'AjaxTimeoutError';
+
 /**
  * A normalized AJAX error.
  *
@@ -431,7 +461,7 @@ export class AjaxResponse {
  *
  * @class AjaxError
  */
-export class AjaxError extends Error {
+export interface AjaxError extends Error {
   /** @type {XMLHttpRequest} The XHR instance associated with the error */
   xhr: XMLHttpRequest;
 
@@ -446,32 +476,43 @@ export class AjaxError extends Error {
 
   /** @type {string|ArrayBuffer|Document|object|any} The response data */
   response: any;
+}
 
-  constructor(message: string, xhr: XMLHttpRequest, request: AjaxRequest) {
-    super(message);
-    this.message = message;
-    this.xhr = xhr;
-    this.request = request;
-    this.status = xhr.status;
-    this.responseType = xhr.responseType || request.responseType;
-    this.response = parseXhrResponse(this.responseType, xhr);
+export interface AjaxErrorCtor {
+  new(message: string, xhr: XMLHttpRequest, request: AjaxRequest): AjaxError;
+}
 
-    this.name = 'AjaxError';
-    (Object as any).setPrototypeOf(this, AjaxError.prototype);
+function AjaxErrorImpl(this: any, message: string, xhr: XMLHttpRequest, request: AjaxRequest): AjaxError {
+  Error.call(this);
+  this.message = message;
+  this.name = 'AjaxError';
+  this.xhr = xhr;
+  this.request = request;
+  this.status = xhr.status;
+  this.responseType = xhr.responseType || request.responseType;
+  this.response = parseXhrResponse(this.responseType, xhr);
+  return this;
+}
+
+AjaxErrorImpl.prototype = Object.create(Error.prototype);
+
+export const AjaxError: AjaxErrorCtor = AjaxErrorImpl as any;
+
+function parseJson(xhr: XMLHttpRequest) {
+  // HACK(benlesh): TypeScript shennanigans
+  // tslint:disable-next-line:no-any XMLHttpRequest is defined to always have 'response' inferring xhr as never for the else clause.
+  if ('response' in (xhr as any)) {
+    //IE does not support json as responseType, parse it internally
+    return xhr.responseType ? xhr.response : JSON.parse(xhr.response || xhr.responseText || 'null');
+  } else {
+    return JSON.parse((xhr as any).responseText || 'null');
   }
 }
 
 function parseXhrResponse(responseType: string, xhr: XMLHttpRequest) {
   switch (responseType) {
     case 'json':
-        // HACK(benlesh): TypeScript shennanigans
-        // tslint:disable-next-line:no-any XMLHttpRequest is defined to always have 'response' inferring xhr as never for the else clause.
-        if ('response' in (xhr as any)) {
-          //IE does not support json as responseType, parse it internally
-          return xhr.responseType ? xhr.response : JSON.parse(xhr.response || xhr.responseText || 'null');
-        } else {
-          return JSON.parse((xhr as any).responseText || 'null');
-        }
+        return tryCatch(parseJson)(xhr);
       case 'xml':
         return xhr.responseXML;
       case 'text':
@@ -482,14 +523,22 @@ function parseXhrResponse(responseType: string, xhr: XMLHttpRequest) {
   }
 }
 
+export interface AjaxTimeoutError extends AjaxError {
+}
+
+export interface AjaxTimeoutErrorCtor {
+  new(xhr: XMLHttpRequest, request: AjaxRequest): AjaxTimeoutError;
+}
+
+function AjaxTimeoutErrorImpl(this: any, xhr: XMLHttpRequest, request: AjaxRequest) {
+  AjaxError.call(this, 'ajax timeout', xhr, request);
+  this.name = 'AjaxTimeoutError';
+  return this;
+}
+
 /**
  * @see {@link ajax}
  *
  * @class AjaxTimeoutError
  */
-export class AjaxTimeoutError extends AjaxError {
-  constructor(xhr: XMLHttpRequest, request: AjaxRequest) {
-    super('ajax timeout', xhr, request);
-    (Object as any).setPrototypeOf(this, AjaxTimeoutError.prototype);
-  }
-}
+export const AjaxTimeoutError: AjaxTimeoutErrorCtor = AjaxTimeoutErrorImpl as any;

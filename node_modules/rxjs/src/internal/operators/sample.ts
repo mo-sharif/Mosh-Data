@@ -14,7 +14,7 @@ import { MonoTypeOperatorFunction, TeardownLogic } from '../types';
  * <span class="informal">It's like {@link sampleTime}, but samples whenever
  * the `notifier` Observable emits something.</span>
  *
- * <img src="./img/sample.png" width="100%">
+ * ![](sample.png)
  *
  * Whenever the `notifier` Observable emits a value or completes, `sample`
  * looks at the source Observable and emits whichever value it has most recently
@@ -22,11 +22,14 @@ import { MonoTypeOperatorFunction, TeardownLogic } from '../types';
  * anything since the previous sampling. The `notifier` is subscribed to as soon
  * as the output Observable is subscribed.
  *
- * @example <caption>On every click, sample the most recent "seconds" timer</caption>
- * var seconds = Rx.Observable.interval(1000);
- * var clicks = Rx.Observable.fromEvent(document, 'click');
- * var result = seconds.sample(clicks);
+ * ## Example
+ * On every click, sample the most recent "seconds" timer
+ * ```javascript
+ * const seconds = interval(1000);
+ * const clicks = fromEvent(document, 'click');
+ * const result = seconds.pipe(sample(clicks));
  * result.subscribe(x => console.log(x));
+ * ```
  *
  * @see {@link audit}
  * @see {@link debounce}

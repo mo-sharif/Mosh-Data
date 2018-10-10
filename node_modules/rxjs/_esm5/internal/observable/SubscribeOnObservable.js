@@ -3,11 +3,6 @@ import * as tslib_1 from "tslib";
 import { Observable } from '../Observable';
 import { asap } from '../scheduler/asap';
 import { isNumeric } from '../util/isNumeric';
-/**
- * We need this JSDoc comment for affecting ESDoc.
- * @extends {Ignored}
- * @hide true
- */
 var SubscribeOnObservable = /*@__PURE__*/ (function (_super) {
     tslib_1.__extends(SubscribeOnObservable, _super);
     function SubscribeOnObservable(source, delayTime, scheduler) {
@@ -29,7 +24,6 @@ var SubscribeOnObservable = /*@__PURE__*/ (function (_super) {
         }
         return _this;
     }
-    /** @nocollapse */
     SubscribeOnObservable.create = function (source, delay, scheduler) {
         if (delay === void 0) {
             delay = 0;
@@ -39,12 +33,10 @@ var SubscribeOnObservable = /*@__PURE__*/ (function (_super) {
         }
         return new SubscribeOnObservable(source, delay, scheduler);
     };
-    /** @nocollapse */
     SubscribeOnObservable.dispatch = function (arg) {
         var source = arg.source, subscriber = arg.subscriber;
         return this.add(source.subscribe(subscriber));
     };
-    /** @deprecated This is an internal implementation detail, do not use. */
     SubscribeOnObservable.prototype._subscribe = function (subscriber) {
         var delay = this.delayTime;
         var source = this.source;

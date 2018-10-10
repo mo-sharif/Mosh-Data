@@ -7,9 +7,7 @@ var map_1 = require("./map");
 function timeInterval(scheduler) {
     if (scheduler === void 0) { scheduler = async_1.async; }
     return function (source) { return defer_1.defer(function () {
-        return source.pipe(
-        // HACK: the typings seem off with scan
-        scan_1.scan(function (_a, value) {
+        return source.pipe(scan_1.scan(function (_a, value) {
             var current = _a.current;
             return ({ value: value, current: scheduler.now(), last: current });
         }, { current: scheduler.now(), value: undefined, last: undefined }), map_1.map(function (_a) {
@@ -19,7 +17,7 @@ function timeInterval(scheduler) {
     }); };
 }
 exports.timeInterval = timeInterval;
-var TimeInterval = /** @class */ (function () {
+var TimeInterval = (function () {
     function TimeInterval(value, interval) {
         this.value = value;
         this.interval = interval;

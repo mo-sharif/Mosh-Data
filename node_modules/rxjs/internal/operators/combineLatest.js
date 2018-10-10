@@ -4,10 +4,6 @@ var isArray_1 = require("../util/isArray");
 var combineLatest_1 = require("../observable/combineLatest");
 var from_1 = require("../observable/from");
 var none = {};
-/* tslint:enable:max-line-length */
-/**
- * @deprecated Deprecated in favor of static combineLatest.
- */
 function combineLatest() {
     var observables = [];
     for (var _i = 0; _i < arguments.length; _i++) {
@@ -17,8 +13,6 @@ function combineLatest() {
     if (typeof observables[observables.length - 1] === 'function') {
         project = observables.pop();
     }
-    // if the first and only other argument besides the resultSelector is an array
-    // assume it's been called with `combineLatest([obs1, obs2, obs3], project)`
     if (observables.length === 1 && isArray_1.isArray(observables[0])) {
         observables = observables[0].slice();
     }

@@ -1,5 +1,12 @@
+/**
+ * @license
+ * Copyright Google Inc. All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
 /// <amd-module name="tsickle/src/type-translator" />
-import * as ts from 'typescript';
+import * as ts from './typescript';
 /**
  * Determines if fileName refers to a builtin lib.d.ts file.
  * This is a terrible hack but it mirrors a similar thing done in Clutz.
@@ -11,7 +18,7 @@ export declare function symbolToDebugString(sym: ts.Symbol): string;
 export declare class TypeTranslator {
     private readonly typeChecker;
     private readonly node;
-    private readonly pathBlackList;
+    private readonly pathBlackList?;
     private readonly symbolsToAliasedNames;
     private readonly ensureSymbolDeclared;
     /**
@@ -46,11 +53,11 @@ export declare class TypeTranslator {
      *     would be fully qualified. I.e. this flag is false for generic types.
      */
     symbolToString(sym: ts.Symbol, useFqn: boolean): string;
-    private stripClutzNamespace(name);
+    private stripClutzNamespace;
     translate(type: ts.Type, resolveAlias?: boolean): string;
-    private translateUnion(type);
-    private translateEnumLiteral(type);
-    private translateObject(type);
+    private translateUnion;
+    private translateEnumLiteral;
+    private translateObject;
     /**
      * translateAnonymousType translates a ts.TypeFlags.ObjectType that is also
      * ts.ObjectFlags.Anonymous. That is, this type's symbol does not have a name. This is the
@@ -59,15 +66,15 @@ export declare class TypeTranslator {
      * But also the inferred type in:
      *     let x = {a: 1};  // type of x is {a: number}, as above
      */
-    private translateAnonymousType(type);
+    private translateAnonymousType;
     /** Converts a ts.Signature (function signature) to a Closure function type. */
-    private signatureToClosure(sig);
+    private signatureToClosure;
     /**
      * Converts parameters for the given signature. Takes parameter declarations as those might not
      * match the signature parameters (e.g. there might be an additional this parameter). This
      * difference is handled by the caller, as is converting the "this" parameter.
      */
-    private convertParams(sig, paramDecls);
+    private convertParams;
     warn(msg: string): void;
     /** @return true if sym should always have type {?}. */
     isBlackListed(symbol: ts.Symbol): boolean;

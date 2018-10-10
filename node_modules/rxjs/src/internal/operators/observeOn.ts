@@ -1,6 +1,7 @@
 import { Observable } from '../Observable';
 import { Operator } from '../Operator';
 import { Subscriber } from '../Subscriber';
+import { Subscription } from '../Subscription';
 import { Notification } from '../Notification';
 import { MonoTypeOperatorFunction, PartialObserver, SchedulerAction, SchedulerLike, TeardownLogic } from '../types';
 
@@ -30,15 +31,18 @@ import { MonoTypeOperatorFunction, PartialObserver, SchedulerAction, SchedulerLi
  * for any kind of delaying of values in the stream, while using `observeOn` to specify which scheduler should be used
  * for notification emissions in general.
  *
- * @example <caption>Ensure values in subscribe are called just before browser repaint.</caption>
- * const intervals = Rx.Observable.interval(10); // Intervals are scheduled
- *                                               // with async scheduler by default...
- *
- * intervals
- * .observeOn(Rx.Scheduler.animationFrame)       // ...but we will observe on animationFrame
- * .subscribe(val => {                           // scheduler to ensure smooth animation.
+ * ## Example
+ * Ensure values in subscribe are called just before browser repaint.
+ * ```javascript
+ * const intervals = interval(10);                // Intervals are scheduled
+ *                                                // with async scheduler by default...
+ * intervals.pipe(
+ *   observeOn(animationFrameScheduler),          // ...but we will observe on animationFrame
+ * )                                              // scheduler to ensure smooth animation.
+ * .subscribe(val => {
  *   someDiv.style.height = val + 'px';
  * });
+ * ```
  *
  * @see {@link delay}
  *
@@ -85,7 +89,8 @@ export class ObserveOnSubscriber<T> extends Subscriber<T> {
   }
 
   private scheduleMessage(notification: Notification<any>): void {
-    this.add(this.scheduler.schedule(
+    const destination = this.destination as Subscription;
+    destination.add(this.scheduler.schedule(
       ObserveOnSubscriber.dispatch,
       this.delay,
       new ObserveOnMessage(notification, this.destination)
@@ -98,10 +103,12 @@ export class ObserveOnSubscriber<T> extends Subscriber<T> {
 
   protected _error(err: any): void {
     this.scheduleMessage(Notification.createError(err));
+    this.unsubscribe();
   }
 
   protected _complete(): void {
     this.scheduleMessage(Notification.createComplete());
+    this.unsubscribe();
   }
 }
 

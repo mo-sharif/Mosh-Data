@@ -1,8 +1,11 @@
 "use strict";
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    }
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -14,22 +17,18 @@ var Observable_1 = require("../Observable");
 var Subscription_1 = require("../Subscription");
 var SubscriptionLoggable_1 = require("./SubscriptionLoggable");
 var applyMixins_1 = require("../util/applyMixins");
-/**
- * We need this JSDoc comment for affecting ESDoc.
- * @ignore
- * @extends {Ignored}
- */
-var ColdObservable = /** @class */ (function (_super) {
+var ColdObservable = (function (_super) {
     __extends(ColdObservable, _super);
     function ColdObservable(messages, scheduler) {
         var _this = _super.call(this, function (subscriber) {
             var observable = this;
             var index = observable.logSubscribedFrame();
-            subscriber.add(new Subscription_1.Subscription(function () {
+            var subscription = new Subscription_1.Subscription();
+            subscription.add(new Subscription_1.Subscription(function () {
                 observable.logUnsubscribedFrame(index);
             }));
             observable.scheduleMessages(subscriber);
-            return subscriber;
+            return subscription;
         }) || this;
         _this.messages = messages;
         _this.subscriptions = [];

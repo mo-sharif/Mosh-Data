@@ -16,16 +16,19 @@ export function mergeMapTo<T, I, R>(innerObservable: ObservableInput<I>, resultS
  * <span class="informal">It's like {@link mergeMap}, but maps each value always
  * to the same inner Observable.</span>
  *
- * <img src="./img/mergeMapTo.png" width="100%">
+ * ![](mergeMapTo.png)
  *
  * Maps each source value to the given Observable `innerObservable` regardless
  * of the source value, and then merges those resulting Observables into one
  * single Observable, which is the output Observable.
  *
- * @example <caption>For each click event, start an interval Observable ticking every 1 second</caption>
- * var clicks = Rx.Observable.fromEvent(document, 'click');
- * var result = clicks.mergeMapTo(Rx.Observable.interval(1000));
+ * ## Example
+ * For each click event, start an interval Observable ticking every 1 second
+ * ```javascript
+ * const clicks = fromEvent(document, 'click');
+ * const result = clicks.pipe(mergeMapTo(interval(1000)));
  * result.subscribe(x => console.log(x));
+ * ```
  *
  * @see {@link concatMapTo}
  * @see {@link merge}

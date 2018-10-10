@@ -1,4 +1,3 @@
-/* Operator exports */
 /** PURE_IMPORTS_START  PURE_IMPORTS_END */
 export { audit } from '../internal/operators/audit';
 export { auditTime } from '../internal/operators/auditTime';
@@ -25,6 +24,7 @@ export { distinct } from '../internal/operators/distinct';
 export { distinctUntilChanged } from '../internal/operators/distinctUntilChanged';
 export { distinctUntilKeyChanged } from '../internal/operators/distinctUntilKeyChanged';
 export { elementAt } from '../internal/operators/elementAt';
+export { endWith } from '../internal/operators/endWith';
 export { every } from '../internal/operators/every';
 export { exhaust } from '../internal/operators/exhaust';
 export { exhaustMap } from '../internal/operators/exhaustMap';

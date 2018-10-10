@@ -11,7 +11,7 @@ import { MonoTypeOperatorFunction, TeardownLogic } from '../types';
  * <span class="informal">Remembers the latest `count` values, then emits those
  * only when the source completes.</span>
  *
- * <img src="./img/takeLast.png" width="100%">
+ * ![](takeLast.png)
  *
  * `takeLast` returns an Observable that emits at most the last `count` values
  * emitted by the source Observable. If the source emits fewer than `count`
@@ -21,10 +21,13 @@ import { MonoTypeOperatorFunction, TeardownLogic } from '../types';
  * whether or not more values will be emitted on the source. For this reason,
  * all values are emitted synchronously, followed by the complete notification.
  *
- * @example <caption>Take the last 3 values of an Observable with many values</caption>
- * var many = Rx.Observable.range(1, 100);
- * var lastThree = many.pipe(takeLast(3));
+ * ## Example
+ * Take the last 3 values of an Observable with many values
+ * ```javascript
+ * const many = range(1, 100);
+ * const lastThree = many.pipe(takeLast(3));
  * lastThree.subscribe(x => console.log(x));
+ * ```
  *
  * @see {@link take}
  * @see {@link takeUntil}

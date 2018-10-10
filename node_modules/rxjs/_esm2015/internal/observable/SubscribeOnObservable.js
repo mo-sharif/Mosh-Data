@@ -1,11 +1,6 @@
 import { Observable } from '../Observable';
 import { asap } from '../scheduler/asap';
 import { isNumeric } from '../util/isNumeric';
-/**
- * We need this JSDoc comment for affecting ESDoc.
- * @extends {Ignored}
- * @hide true
- */
 export class SubscribeOnObservable extends Observable {
     constructor(source, delayTime = 0, scheduler = asap) {
         super();
@@ -19,16 +14,13 @@ export class SubscribeOnObservable extends Observable {
             this.scheduler = asap;
         }
     }
-    /** @nocollapse */
     static create(source, delay = 0, scheduler = asap) {
         return new SubscribeOnObservable(source, delay, scheduler);
     }
-    /** @nocollapse */
     static dispatch(arg) {
         const { source, subscriber } = arg;
         return this.add(source.subscribe(subscriber));
     }
-    /** @deprecated This is an internal implementation detail, do not use. */
     _subscribe(subscriber) {
         const delay = this.delayTime;
         const source = this.source;

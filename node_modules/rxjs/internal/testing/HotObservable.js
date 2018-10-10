@@ -1,8 +1,11 @@
 "use strict";
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    }
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -14,12 +17,7 @@ var Subject_1 = require("../Subject");
 var Subscription_1 = require("../Subscription");
 var SubscriptionLoggable_1 = require("./SubscriptionLoggable");
 var applyMixins_1 = require("../util/applyMixins");
-/**
- * We need this JSDoc comment for affecting ESDoc.
- * @ignore
- * @extends {Ignored}
- */
-var HotObservable = /** @class */ (function (_super) {
+var HotObservable = (function (_super) {
     __extends(HotObservable, _super);
     function HotObservable(messages, scheduler) {
         var _this = _super.call(this) || this;
@@ -28,23 +26,22 @@ var HotObservable = /** @class */ (function (_super) {
         _this.scheduler = scheduler;
         return _this;
     }
-    /** @deprecated This is an internal implementation detail, do not use. */
     HotObservable.prototype._subscribe = function (subscriber) {
         var subject = this;
         var index = subject.logSubscribedFrame();
-        subscriber.add(new Subscription_1.Subscription(function () {
+        var subscription = new Subscription_1.Subscription();
+        subscription.add(new Subscription_1.Subscription(function () {
             subject.logUnsubscribedFrame(index);
         }));
-        return _super.prototype._subscribe.call(this, subscriber);
+        subscription.add(_super.prototype._subscribe.call(this, subscriber));
+        return subscription;
     };
     HotObservable.prototype.setup = function () {
         var subject = this;
         var messagesLength = subject.messages.length;
-        /* tslint:disable:no-var-keyword */
         for (var i = 0; i < messagesLength; i++) {
             (function () {
                 var message = subject.messages[i];
-                /* tslint:enable */
                 subject.scheduler.schedule(function () { message.notification.observe(subject); }, message.frame);
             })();
         }

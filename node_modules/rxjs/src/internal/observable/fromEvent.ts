@@ -13,6 +13,14 @@ export interface NodeStyleEventEmitter {
 
 export type NodeEventHandler = (...args: any[]) => void;
 
+// For APIs that implement `addListener` and `removeListener` methods that may
+// not use the same arguments or return EventEmitter values
+// such as React Native
+export interface NodeCompatibleEventEmitter {
+  addListener: (eventName: string, handler: NodeEventHandler) => void | {};
+  removeListener: (eventName: string, handler: NodeEventHandler) => void | {};
+}
+
 export interface JQueryStyleEventEmitter {
   on: (eventName: string, handler: Function) => void;
   off: (eventName: string, handler: Function) => void;
@@ -23,7 +31,7 @@ export interface HasEventTargetAddRemove<E> {
   removeEventListener(type: string, listener?: ((evt: E) => void) | null, options?: EventListenerOptions | boolean): void;
 }
 
-export type EventTargetLike<T> = HasEventTargetAddRemove<T> | NodeStyleEventEmitter | JQueryStyleEventEmitter;
+export type EventTargetLike<T> = HasEventTargetAddRemove<T> | NodeStyleEventEmitter | NodeCompatibleEventEmitter | JQueryStyleEventEmitter;
 
 export type FromEventTarget<T> = EventTargetLike<T> | ArrayLike<EventTargetLike<T>>;
 
@@ -54,7 +62,7 @@ export function fromEvent<T>(target: FromEventTarget<T>, eventName: string, opti
  * <span class="informal">Creates an Observable from DOM events, or Node.js
  * EventEmitter events or others.</span>
  *
- * <img src="./img/fromEvent.png" width="100%">
+ * ![](fromEvent.png)
  *
  * `fromEvent` accepts as a first argument event target, which is an object with methods
  * for registering event handler functions. As a second argument it takes string that indicates
@@ -122,19 +130,22 @@ export function fromEvent<T>(target: FromEventTarget<T>, eventName: string, opti
  * installed and removed in each of elements.
  *
  *
- * @example <caption>Emits clicks happening on the DOM document</caption>
- * var clicks = fromEvent(document, 'click');
+ * ## Examples
+ * ### Emits clicks happening on the DOM document
+ * ```javascript
+ * const clicks = fromEvent(document, 'click');
  * clicks.subscribe(x => console.log(x));
  *
  * // Results in:
  * // MouseEvent object logged to console every time a click
  * // occurs on the document.
+ * ```
  *
- *
- * @example <caption>Use addEventListener with capture option</caption>
- * var clicksInDocument = fromEvent(document, 'click', true); // note optional configuration parameter
- *                                                                          // which will be passed to addEventListener
- * var clicksInDiv = fromEvent(someDivInDocument, 'click');
+ * ### Use addEventListener with capture option
+ * ```javascript
+ * const clicksInDocument = fromEvent(document, 'click', true); // note optional configuration parameter
+ *                                                              // which will be passed to addEventListener
+ * const clicksInDiv = fromEvent(someDivInDocument, 'click');
  *
  * clicksInDocument.subscribe(() => console.log('document'));
  * clicksInDiv.subscribe(() => console.log('div'));
@@ -145,6 +156,7 @@ export function fromEvent<T>(target: FromEventTarget<T>, eventName: string, opti
  * // Since we specified optional `capture` option, document
  * // will catch event when it goes DOWN DOM tree, so console
  * // will log "document" and then "div".
+ * ```
  *
  * @see {@link bindCallback}
  * @see {@link bindNodeCallback}

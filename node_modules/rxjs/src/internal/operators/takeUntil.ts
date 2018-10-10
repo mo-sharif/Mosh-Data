@@ -15,7 +15,7 @@ import { MonoTypeOperatorFunction, TeardownLogic } from '../types';
  * <span class="informal">Lets values pass until a second Observable,
  * `notifier`, emits a value. Then, it completes.</span>
  *
- * <img src="./img/takeUntil.png" width="100%">
+ * ![](takeUntil.png)
  *
  * `takeUntil` subscribes and begins mirroring the source Observable. It also
  * monitors a second Observable, `notifier` that you provide. If the `notifier`
@@ -23,11 +23,14 @@ import { MonoTypeOperatorFunction, TeardownLogic } from '../types';
  * and completes. If the `notifier` doesn't emit any value and completes
  * then `takeUntil` will pass all values.
  *
- * @example <caption>Tick every second until the first click happens</caption>
- * var interval = Rx.Observable.interval(1000);
- * var clicks = Rx.Observable.fromEvent(document, 'click');
- * var result = interval.takeUntil(clicks);
+ * ## Example
+ * Tick every second until the first click happens
+ * ```javascript
+ * const interval = interval(1000);
+ * const clicks = fromEvent(document, 'click');
+ * const result = interval.pipe(takeUntil(clicks));
  * result.subscribe(x => console.log(x));
+ * ```
  *
  * @see {@link take}
  * @see {@link takeLast}
@@ -53,7 +56,7 @@ class TakeUntilOperator<T> implements Operator<T, T> {
   call(subscriber: Subscriber<T>, source: any): TeardownLogic {
     const takeUntilSubscriber = new TakeUntilSubscriber(subscriber);
     const notifierSubscription = subscribeToResult(takeUntilSubscriber, this.notifier);
-    if (notifierSubscription && !notifierSubscription.closed) {
+    if (notifierSubscription && !takeUntilSubscriber.seenValue) {
       takeUntilSubscriber.add(notifierSubscription);
       return source.subscribe(takeUntilSubscriber);
     }
@@ -67,6 +70,7 @@ class TakeUntilOperator<T> implements Operator<T, T> {
  * @extends {Ignored}
  */
 class TakeUntilSubscriber<T, R> extends OuterSubscriber<T, R> {
+  seenValue = false;
 
   constructor(destination: Subscriber<any>, ) {
     super(destination);
@@ -75,6 +79,7 @@ class TakeUntilSubscriber<T, R> extends OuterSubscriber<T, R> {
   notifyNext(outerValue: T, innerValue: R,
              outerIndex: number, innerIndex: number,
              innerSub: InnerSubscriber<T, R>): void {
+    this.seenValue = true;
     this.complete();
   }
 

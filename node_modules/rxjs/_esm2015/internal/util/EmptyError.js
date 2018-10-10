@@ -1,18 +1,9 @@
-/**
- * An error thrown when an Observable or a sequence was queried but has no
- * elements.
- *
- * @see {@link first}
- * @see {@link last}
- * @see {@link single}
- *
- * @class EmptyError
- */
-export class EmptyError extends Error {
-    constructor() {
-        super('no elements in sequence');
-        this.name = 'EmptyError';
-        Object.setPrototypeOf(this, EmptyError.prototype);
-    }
+function EmptyErrorImpl() {
+    Error.call(this);
+    this.message = 'no elements in sequence';
+    this.name = 'EmptyError';
+    return this;
 }
+EmptyErrorImpl.prototype = Object.create(Error.prototype);
+export const EmptyError = EmptyErrorImpl;
 //# sourceMappingURL=EmptyError.js.map

@@ -7,6 +7,12 @@ import { InnerSubscriber } from '../InnerSubscriber';
 import { subscribeToResult } from '../util/subscribeToResult';
 import { MonoTypeOperatorFunction, TeardownLogic } from '../types';
 
+/* tslint:disable:max-line-length */
+/** @deprecated In future versions, empty notifiers will no longer re-emit the source value on the output observable. */
+export function delayWhen<T>(delayDurationSelector: (value: T, index: number) => Observable<never>, subscriptionDelay?: Observable<any>): MonoTypeOperatorFunction<T>;
+export function delayWhen<T>(delayDurationSelector: (value: T, index: number) => Observable<any>, subscriptionDelay?: Observable<any>): MonoTypeOperatorFunction<T>;
+/* tslint:disable:max-line-length */
+
 /**
  * Delays the emission of items from the source Observable by a given time span
  * determined by the emissions of another Observable.
@@ -14,7 +20,7 @@ import { MonoTypeOperatorFunction, TeardownLogic } from '../types';
  * <span class="informal">It's like {@link delay}, but the time span of the
  * delay duration is determined by a second Observable.</span>
  *
- * <img src="./img/delayWhen.png" width="100%">
+ * ![](delayWhen.png)
  *
  * `delayWhen` time shifts each emitted value from the source Observable by a
  * time span determined by another Observable. When the source emits a value,
@@ -22,6 +28,8 @@ import { MonoTypeOperatorFunction, TeardownLogic } from '../types';
  * argument, and should return an Observable, called the "duration" Observable.
  * The source value is emitted on the output Observable only when the duration
  * Observable emits a value or completes.
+ * The completion of the notifier triggering the emission of the source value
+ * is deprecated behavior and will be removed in future versions.
  *
  * Optionally, `delayWhen` takes a second argument, `subscriptionDelay`, which
  * is an Observable. When `subscriptionDelay` emits its first value or
@@ -30,17 +38,20 @@ import { MonoTypeOperatorFunction, TeardownLogic } from '../types';
  * `delayWhen` will subscribe to the source Observable as soon as the output
  * Observable is subscribed.
  *
- * @example <caption>Delay each click by a random amount of time, between 0 and 5 seconds</caption>
- * var clicks = Rx.Observable.fromEvent(document, 'click');
- * var delayedClicks = clicks.delayWhen(event =>
- *   Rx.Observable.interval(Math.random() * 5000)
+ * ## Example
+ * Delay each click by a random amount of time, between 0 and 5 seconds
+ * ```javascript
+ * const clicks = fromEvent(document, 'click');
+ * const delayedClicks = clicks.pipe(
+ *   delayWhen(event => interval(Math.random() * 5000)),
  * );
  * delayedClicks.subscribe(x => console.log(x));
+ * ```
  *
  * @see {@link debounce}
  * @see {@link delay}
  *
- * @param {function(value: T): Observable} delayDurationSelector A function that
+ * @param {function(value: T, index: number): Observable} delayDurationSelector A function that
  * returns an Observable for each value emitted by the source Observable, which
  * is then used to delay the emission of that item on the output Observable
  * until the Observable returned from this function emits a value.
@@ -52,7 +63,7 @@ import { MonoTypeOperatorFunction, TeardownLogic } from '../types';
  * @method delayWhen
  * @owner Observable
  */
-export function delayWhen<T>(delayDurationSelector: (value: T) => Observable<any>,
+export function delayWhen<T>(delayDurationSelector: (value: T, index: number) => Observable<any>,
                              subscriptionDelay?: Observable<any>): MonoTypeOperatorFunction<T> {
   if (subscriptionDelay) {
     return (source: Observable<T>) =>
@@ -63,7 +74,7 @@ export function delayWhen<T>(delayDurationSelector: (value: T) => Observable<any
 }
 
 class DelayWhenOperator<T> implements Operator<T, T> {
-  constructor(private delayDurationSelector: (value: T) => Observable<any>) {
+  constructor(private delayDurationSelector: (value: T, index: number) => Observable<any>) {
   }
 
   call(subscriber: Subscriber<T>, source: any): TeardownLogic {
@@ -79,10 +90,10 @@ class DelayWhenOperator<T> implements Operator<T, T> {
 class DelayWhenSubscriber<T, R> extends OuterSubscriber<T, R> {
   private completed: boolean = false;
   private delayNotifierSubscriptions: Array<Subscription> = [];
-  private values: Array<T> = [];
+  private index: number = 0;
 
   constructor(destination: Subscriber<T>,
-              private delayDurationSelector: (value: T) => Observable<any>) {
+              private delayDurationSelector: (value: T, index: number) => Observable<any>) {
     super(destination);
   }
 
@@ -107,8 +118,9 @@ class DelayWhenSubscriber<T, R> extends OuterSubscriber<T, R> {
   }
 
   protected _next(value: T): void {
+    const index = this.index++;
     try {
-      const delayNotifier = this.delayDurationSelector(value);
+      const delayNotifier = this.delayDurationSelector(value, index);
       if (delayNotifier) {
         this.tryDelay(delayNotifier, value);
       }
@@ -120,32 +132,28 @@ class DelayWhenSubscriber<T, R> extends OuterSubscriber<T, R> {
   protected _complete(): void {
     this.completed = true;
     this.tryComplete();
+    this.unsubscribe();
   }
 
   private removeSubscription(subscription: InnerSubscriber<T, R>): T {
     subscription.unsubscribe();
 
     const subscriptionIdx = this.delayNotifierSubscriptions.indexOf(subscription);
-    let value: T = null;
-
     if (subscriptionIdx !== -1) {
-      value = this.values[subscriptionIdx];
       this.delayNotifierSubscriptions.splice(subscriptionIdx, 1);
-      this.values.splice(subscriptionIdx, 1);
     }
 
-    return value;
+    return subscription.outerValue;
   }
 
   private tryDelay(delayNotifier: Observable<any>, value: T): void {
     const notifierSubscription = subscribeToResult(this, delayNotifier, value);
 
     if (notifierSubscription && !notifierSubscription.closed) {
-      this.add(notifierSubscription);
+      const destination = this.destination as Subscription;
+      destination.add(notifierSubscription);
       this.delayNotifierSubscriptions.push(notifierSubscription);
     }
-
-    this.values.push(value);
   }
 
   private tryComplete(): void {
@@ -193,6 +201,7 @@ class SubscriptionDelaySubscriber<T> extends Subscriber<T> {
   }
 
   protected _complete() {
+    this.unsubscribe();
     this.subscribeToSource();
   }
 

@@ -13,9 +13,9 @@ export class UserProfileComponent implements OnInit {
   formattedMessage: string;
   imageUrl: string = "";
   userForm = this.fb.group({
-    firstName: ['Mosh', Validators.required],
-    lastName: ['Bubbah', Validators.required],
-    email: ['Mo@mosh-media.com'],
+    firstName: ['', Validators.required],
+    lastName: ['', Validators.required],
+    email: [''],
     address: this.fb.group({
       street: [''],
       city: [''],

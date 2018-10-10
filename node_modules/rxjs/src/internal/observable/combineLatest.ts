@@ -50,7 +50,7 @@ export function combineLatest<R>(...observables: Array<ObservableInput<any> | ((
  * computes a formula using the latest values from all the inputs, then emits
  * the output of that formula.</span>
  *
- * <img src="./img/combineLatest.png" width="100%">
+ * ![](combineLatest.png)
  *
  * `combineLatest` combines the values from all the Observables passed as
  * arguments. This is done by subscribing to each Observable in order and,
@@ -69,8 +69,8 @@ export function combineLatest<R>(...observables: Array<ObservableInput<any> | ((
  * To ensure output array has always the same length, `combineLatest` will
  * actually wait for all input Observables to emit at least once,
  * before it starts emitting results. This means if some Observable emits
- * values before other Observables started emitting, all that values but last
- * will be lost. On the other hand, is some Observable does not emit value but
+ * values before other Observables started emitting, all these values but the last
+ * will be lost. On the other hand, if some Observable does not emit a value but
  * completes, resulting Observable will complete at the same moment without
  * emitting anything, since it will be now impossible to include value from
  * completed Observable in resulting array. Also, if some input Observable does
@@ -93,43 +93,52 @@ export function combineLatest<R>(...observables: Array<ObservableInput<any> | ((
  * of values, but values themselves. That means default `project` can be imagined
  * as function that takes all its arguments and puts them into an array.
  *
- *
- * @example <caption>Combine two timer Observables</caption>
- * const firstTimer = Rx.Observable.timer(0, 1000); // emit 0, 1, 2... after every second, starting from now
- * const secondTimer = Rx.Observable.timer(500, 1000); // emit 0, 1, 2... after every second, starting 0,5s from now
- * const combinedTimers = Rx.Observable.combineLatest(firstTimer, secondTimer);
+ * ## Examples
+ * ### Combine two timer Observables
+ * ```javascript
+ * const firstTimer = timer(0, 1000); // emit 0, 1, 2... after every second, starting from now
+ * const secondTimer = timer(500, 1000); // emit 0, 1, 2... after every second, starting 0,5s from now
+ * const combinedTimers = combineLatest(firstTimer, secondTimer);
  * combinedTimers.subscribe(value => console.log(value));
  * // Logs
  * // [0, 0] after 0.5s
  * // [1, 0] after 1s
  * // [1, 1] after 1.5s
  * // [2, 1] after 2s
+ * ```
  *
- *
- * @example <caption>Combine an array of Observables</caption>
+ * ### Combine an array of Observables
+ * ```javascript
  * const observables = [1, 5, 10].map(
- *   n => Rx.Observable.of(n).delay(n * 1000).startWith(0) // emit 0 and then emit n after n seconds
+ *   n => of(n).pipe(
+ *     delay(n * 1000),   // emit 0 and then emit n after n seconds
+ *     startWith(0),
+ *   )
  * );
- * const combined = Rx.Observable.combineLatest(observables);
+ * const combined = combineLatest(observables);
  * combined.subscribe(value => console.log(value));
  * // Logs
  * // [0, 0, 0] immediately
  * // [1, 0, 0] after 1s
  * // [1, 5, 0] after 5s
  * // [1, 5, 10] after 10s
+ * ```
  *
  *
- * @example <caption>Use project function to dynamically calculate the Body-Mass Index</caption>
- * var weight = Rx.Observable.of(70, 72, 76, 79, 75);
- * var height = Rx.Observable.of(1.76, 1.77, 1.78);
- * var bmi = Rx.Observable.combineLatest(weight, height, (w, h) => w / (h * h));
+ * ### Use project function to dynamically calculate the Body-Mass Index
+ * ```javascript
+ * * const weight = of(70, 72, 76, 79, 75);
+ * const height = of(1.76, 1.77, 1.78);
+ * const bmi = combineLatest(weight, height).pipe(
+ *   map(([w, h]) => w / (h * h)),
+ * );
  * bmi.subscribe(x => console.log('BMI is ' + x));
  *
  * // With output to console:
  * // BMI is 24.212293388429753
  * // BMI is 23.93948099205209
  * // BMI is 23.671253629592222
- *
+ * ```
  *
  * @see {@link combineAll}
  * @see {@link merge}
@@ -141,7 +150,7 @@ export function combineLatest<R>(...observables: Array<ObservableInput<any> | ((
  * or an array of Observables may be given as the first argument.
  * @param {function} [project] An optional function to project the values from
  * the combined latest values into a new value on the output Observable.
- * @param {Scheduler} [scheduler=null] The IScheduler to use for subscribing to
+ * @param {SchedulerLike} [scheduler=null] The {@link SchedulerLike} to use for subscribing to
  * each input Observable.
  * @return {Observable} An Observable of projected values from the most recent
  * values from each input Observable, or an array of the most recent values from

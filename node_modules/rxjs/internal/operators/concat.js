@@ -1,10 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var concat_1 = require("../observable/concat");
-/* tslint:enable:max-line-length */
-/**
- * @deprecated Deprecated in favor of static concat.
- */
 function concat() {
     var observables = [];
     for (var _i = 0; _i < arguments.length; _i++) {

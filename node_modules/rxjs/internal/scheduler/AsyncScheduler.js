@@ -1,8 +1,11 @@
 "use strict";
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    }
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -11,7 +14,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var Scheduler_1 = require("../Scheduler");
-var AsyncScheduler = /** @class */ (function (_super) {
+var AsyncScheduler = (function (_super) {
     __extends(AsyncScheduler, _super);
     function AsyncScheduler(SchedulerAction, now) {
         if (now === void 0) { now = Scheduler_1.Scheduler.now; }
@@ -24,20 +27,7 @@ var AsyncScheduler = /** @class */ (function (_super) {
             }
         }) || this;
         _this.actions = [];
-        /**
-         * A flag to indicate whether the Scheduler is currently executing a batch of
-         * queued actions.
-         * @type {boolean}
-         * @deprecated internal use only
-         */
         _this.active = false;
-        /**
-         * An internal ID used to track the latest asynchronous task such as those
-         * coming from `setTimeout`, `setInterval`, `requestAnimationFrame`, and
-         * others.
-         * @type {any}
-         * @deprecated internal use only
-         */
         _this.scheduled = undefined;
         return _this;
     }
@@ -62,7 +52,7 @@ var AsyncScheduler = /** @class */ (function (_super) {
             if (error = action.execute(action.state, action.delay)) {
                 break;
             }
-        } while (action = actions.shift()); // exhaust the scheduler queue
+        } while (action = actions.shift());
         this.active = false;
         if (error) {
             while (action = actions.shift()) {

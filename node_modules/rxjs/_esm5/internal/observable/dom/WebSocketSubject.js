@@ -13,11 +13,6 @@ var DEFAULT_WEBSOCKET_CONFIG = {
     serializer: function (value) { return JSON.stringify(value); },
 };
 var WEBSOCKETSUBJECT_INVALID_ERROR_OBJECT = 'WebSocketSubject.error must be called with an object with an error code, and an optional reason: { code: number, reason: string }';
-/**
- * We need this JSDoc comment for affecting ESDoc.
- * @extends {Ignored}
- * @hide true
- */
 var WebSocketSubject = /*@__PURE__*/ (function (_super) {
     tslib_1.__extends(WebSocketSubject, _super);
     function WebSocketSubject(urlConfigOrSource, destination) {
@@ -28,7 +23,6 @@ var WebSocketSubject = /*@__PURE__*/ (function (_super) {
         }
         else {
             var config = _this._config = tslib_1.__assign({}, DEFAULT_WEBSOCKET_CONFIG);
-            config.WebSocketCtor = WebSocket;
             _this._output = new Subject();
             if (typeof urlConfigOrSource === 'string') {
                 config.url = urlConfigOrSource;
@@ -40,7 +34,10 @@ var WebSocketSubject = /*@__PURE__*/ (function (_super) {
                     }
                 }
             }
-            if (!config.WebSocketCtor) {
+            if (!config.WebSocketCtor && WebSocket) {
+                config.WebSocketCtor = WebSocket;
+            }
+            else if (!config.WebSocketCtor) {
                 throw new Error('no WebSocket constructor can be found');
             }
             _this.destination = new ReplaySubject();
@@ -60,24 +57,6 @@ var WebSocketSubject = /*@__PURE__*/ (function (_super) {
         }
         this._output = new Subject();
     };
-    /**
-     * Creates an {@link Observable}, that when subscribed to, sends a message,
-     * defined be the `subMsg` function, to the server over the socket to begin a
-     * subscription to data over that socket. Once data arrives, the
-     * `messageFilter` argument will be used to select the appropriate data for
-     * the resulting Observable. When teardown occurs, either due to
-     * unsubscription, completion or error, a message defined by the `unsubMsg`
-     * argument will be send to the server over the WebSocketSubject.
-     *
-     * @param subMsg A function to generate the subscription message to be sent to
-     * the server. This will still be processed by the serializer in the
-     * WebSocketSubject's config. (Which defaults to JSON serialization)
-     * @param unsubMsg A function to generate the unsubscription message to be
-     * sent to the server at teardown. This will still be processed by the
-     * serializer in the WebSocketSubject's config.
-     * @param messageFilter A predicate for selecting the appropriate messages
-     * from the server for the output stream.
-     */
     WebSocketSubject.prototype.multiplex = function (subMsg, unsubMsg, messageFilter) {
         var self = this;
         return new Observable(function (observer) {
@@ -201,7 +180,6 @@ var WebSocketSubject = /*@__PURE__*/ (function (_super) {
             }
         };
     };
-    /** @deprecated This is an internal implementation detail, do not use. */
     WebSocketSubject.prototype._subscribe = function (subscriber) {
         var _this = this;
         var source = this.source;
@@ -211,9 +189,8 @@ var WebSocketSubject = /*@__PURE__*/ (function (_super) {
         if (!this._socket) {
             this._connectSocket();
         }
-        var subscription = new Subscription();
-        subscription.add(this._output.subscribe(subscriber));
-        subscription.add(function () {
+        this._output.subscribe(subscriber);
+        subscriber.add(function () {
             var _socket = _this._socket;
             if (_this._output.observers.length === 0) {
                 if (_socket && _socket.readyState === 1) {
@@ -222,7 +199,7 @@ var WebSocketSubject = /*@__PURE__*/ (function (_super) {
                 _this._resetState();
             }
         });
-        return subscription;
+        return subscriber;
     };
     WebSocketSubject.prototype.unsubscribe = function () {
         var _a = this, source = _a.source, _socket = _a._socket;

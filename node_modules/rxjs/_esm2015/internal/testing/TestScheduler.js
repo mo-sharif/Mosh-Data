@@ -54,16 +54,17 @@ export class TestScheduler extends VirtualTimeScheduler {
         });
         return messages;
     }
-    expectObservable(observable, unsubscriptionMarbles = null) {
+    expectObservable(observable, subscriptionMarbles = null) {
         const actual = [];
         const flushTest = { actual, ready: false };
-        const unsubscriptionFrame = TestScheduler
-            .parseMarblesAsSubscriptions(unsubscriptionMarbles, this.runMode).unsubscribedFrame;
+        const subscriptionParsed = TestScheduler.parseMarblesAsSubscriptions(subscriptionMarbles, this.runMode);
+        const subscriptionFrame = subscriptionParsed.subscribedFrame === Number.POSITIVE_INFINITY ?
+            0 : subscriptionParsed.subscribedFrame;
+        const unsubscriptionFrame = subscriptionParsed.unsubscribedFrame;
         let subscription;
         this.schedule(() => {
             subscription = observable.subscribe(x => {
                 let value = x;
-                // Support Observable-of-Observables
                 if (x instanceof Observable) {
                     value = this.materializeInnerObservable(value, this.frame);
                 }
@@ -73,7 +74,7 @@ export class TestScheduler extends VirtualTimeScheduler {
             }, () => {
                 actual.push({ frame: this.frame, notification: Notification.createComplete() });
             });
-        }, 0);
+        }, subscriptionFrame);
         if (unsubscriptionFrame !== Number.POSITIVE_INFINITY) {
             this.schedule(() => subscription.unsubscribe(), unsubscriptionFrame);
         }
@@ -104,18 +105,14 @@ export class TestScheduler extends VirtualTimeScheduler {
             hotObservables.shift().setup();
         }
         super.flush();
-        const { flushTests } = this;
-        const flushTestsCopy = flushTests.slice();
-        for (let i = 0, l = flushTests.length; i < l; i++) {
-            const test = flushTestsCopy[i];
+        this.flushTests = this.flushTests.filter(test => {
             if (test.ready) {
-                // remove it from the original array, not our copy
-                flushTests.splice(i, 1);
                 this.assertDeepEqual(test.actual, test.expected);
+                return false;
             }
-        }
+            return true;
+        });
     }
-    /** @nocollapse */
     static parseMarblesAsSubscriptions(marbles, runMode = false) {
         if (typeof marbles !== 'string') {
             return new SubscriptionLog(Number.POSITIVE_INFINITY);
@@ -133,7 +130,6 @@ export class TestScheduler extends VirtualTimeScheduler {
             const c = marbles[i];
             switch (c) {
                 case ' ':
-                    // Whitespace no longer advances time
                     if (!runMode) {
                         advanceFrameBy(1);
                     }
@@ -165,10 +161,7 @@ export class TestScheduler extends VirtualTimeScheduler {
                     unsubscriptionFrame = groupStart > -1 ? groupStart : frame;
                     break;
                 default:
-                    // time progression syntax
                     if (runMode && c.match(/^[0-9]$/)) {
-                        // Time progression must be preceeded by at least one space
-                        // if it's not at the beginning of the diagram
                         if (i === 0 || marbles[i - 1] === ' ') {
                             const buffer = marbles.slice(i);
                             const match = buffer.match(/^([0-9]+(?:\.[0-9]+)?)(ms|s|m) /);
@@ -207,7 +200,6 @@ export class TestScheduler extends VirtualTimeScheduler {
             return new SubscriptionLog(subscriptionFrame, unsubscriptionFrame);
         }
     }
-    /** @nocollapse */
     static parseMarbles(marbles, values, errorValue, materializeInnerObservables = false, runMode = false) {
         if (marbles.indexOf('!') !== -1) {
             throw new Error('conventional marble diagrams cannot have the ' +
@@ -220,7 +212,6 @@ export class TestScheduler extends VirtualTimeScheduler {
         const getValue = typeof values !== 'object' ?
             (x) => x :
             (x) => {
-                // Support Observable-of-Observables
                 if (materializeInnerObservables && values[x] instanceof ColdObservable) {
                     return values[x].messages;
                 }
@@ -236,7 +227,6 @@ export class TestScheduler extends VirtualTimeScheduler {
             const c = marbles[i];
             switch (c) {
                 case ' ':
-                    // Whitespace no longer advances time
                     if (!runMode) {
                         advanceFrameBy(1);
                     }
@@ -264,10 +254,7 @@ export class TestScheduler extends VirtualTimeScheduler {
                     advanceFrameBy(1);
                     break;
                 default:
-                    // Might be time progression syntax, or a value literal
                     if (runMode && c.match(/^[0-9]$/)) {
-                        // Time progression must be preceeded by at least one space
-                        // if it's not at the beginning of the diagram
                         if (i === 0 || marbles[i - 1] === ' ') {
                             const buffer = marbles.slice(i);
                             const match = buffer.match(/^([0-9]+(?:\.[0-9]+)?)(ms|s|m) /);
@@ -319,13 +306,17 @@ export class TestScheduler extends VirtualTimeScheduler {
             expectObservable: this.expectObservable.bind(this),
             expectSubscriptions: this.expectSubscriptions.bind(this),
         };
-        const ret = callback(helpers);
-        this.flush();
-        TestScheduler.frameTimeFactor = prevFrameTimeFactor;
-        this.maxFrames = prevMaxFrames;
-        this.runMode = false;
-        AsyncScheduler.delegate = undefined;
-        return ret;
+        try {
+            const ret = callback(helpers);
+            this.flush();
+            return ret;
+        }
+        finally {
+            TestScheduler.frameTimeFactor = prevFrameTimeFactor;
+            this.maxFrames = prevMaxFrames;
+            this.runMode = false;
+            AsyncScheduler.delegate = undefined;
+        }
     }
 }
 //# sourceMappingURL=TestScheduler.js.map

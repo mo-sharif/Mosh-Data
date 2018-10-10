@@ -6,7 +6,7 @@ import { MonoTypeOperatorFunction, SchedulerLike } from '../types';
  * <span class="informal">Samples the source Observable at periodic time
  * intervals, emitting what it samples.</span>
  *
- * <img src="./img/sampleTime.png" width="100%">
+ * ![](sampleTime.png)
  *
  * `sampleTime` periodically looks at the source Observable and emits whichever
  * value it has most recently emitted since the previous sampling, unless the
@@ -15,10 +15,13 @@ import { MonoTypeOperatorFunction, SchedulerLike } from '../types';
  * defined by the optional `scheduler` argument). The sampling starts as soon as
  * the output Observable is subscribed.
  *
- * @example <caption>Every second, emit the most recent click at most once</caption>
- * var clicks = Rx.Observable.fromEvent(document, 'click');
- * var result = clicks.sampleTime(1000);
+ * ## Example
+ * Every second, emit the most recent click at most once
+ * ```javascript
+ * const clicks = fromEvent(document, 'click');
+ * const result = clicks.pipe(sampleTime(1000));
  * result.subscribe(x => console.log(x));
+ * ```
  *
  * @see {@link auditTime}
  * @see {@link debounceTime}
@@ -28,7 +31,7 @@ import { MonoTypeOperatorFunction, SchedulerLike } from '../types';
  *
  * @param {number} period The sampling period expressed in milliseconds or the
  * time unit determined internally by the optional `scheduler`.
- * @param {Scheduler} [scheduler=async] The {@link IScheduler} to use for
+ * @param {SchedulerLike} [scheduler=async] The {@link SchedulerLike} to use for
  * managing the timers that handle the sampling.
  * @return {Observable<T>} An Observable that emits the results of sampling the
  * values emitted by the source Observable at the specified time interval.

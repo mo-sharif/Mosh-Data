@@ -1,19 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-/* tslint:disable:no-unused-variable */
-// Subject imported before Observable to bypass circular dependency issue since
-// Subject extends Observable and Observable references Subject in it's
-// definition
 var Subject_1 = require("./Subject");
 exports.Subject = Subject_1.Subject;
 exports.AnonymousSubject = Subject_1.AnonymousSubject;
-/* tslint:enable:no-unused-variable */
 var Observable_1 = require("./Observable");
 exports.Observable = Observable_1.Observable;
 var config_1 = require("./config");
 exports.config = config_1.config;
-// statics
-/* tslint:disable:no-use-before-declare */
 require("rxjs-compat/add/observable/bindCallback");
 require("rxjs-compat/add/observable/bindNodeCallback");
 require("rxjs-compat/add/observable/combineLatest");
@@ -39,10 +32,8 @@ require("rxjs-compat/add/observable/using");
 require("rxjs-compat/add/observable/throw");
 require("rxjs-compat/add/observable/timer");
 require("rxjs-compat/add/observable/zip");
-//dom
 require("rxjs-compat/add/observable/dom/ajax");
 require("rxjs-compat/add/observable/dom/webSocket");
-//internal/operators
 require("rxjs-compat/add/operator/buffer");
 require("rxjs-compat/add/operator/bufferCount");
 require("rxjs-compat/add/operator/bufferTime");
@@ -192,20 +183,6 @@ var iterator_1 = require("./symbol/iterator");
 var observable_1 = require("./symbol/observable");
 var _operators = require("./operators/index");
 exports.operators = _operators;
-/* tslint:enable:no-unused-variable */
-/**
- * @typedef {Object} Rx.Scheduler
- * @property {Scheduler} queue Schedules on a queue in the current event frame
- * (trampoline scheduler). Use this for iteration operations.
- * @property {Scheduler} asap Schedules on the micro task queue, which uses the
- * fastest transport mechanism available, either Node.js' `process.nextTick()`
- * or Web Worker MessageChannel or setTimeout or others. Use this for
- * asynchronous conversions.
- * @property {Scheduler} async Schedules work with `setInterval`. Use this for
- * time-based operations.
- * @property {Scheduler} animationFrame Schedules work with `requestAnimationFrame`.
- * Use this for synchronizing with the platform's painting
- */
 var Scheduler = {
     asap: asap_1.asap,
     queue: queue_1.queue,
@@ -213,19 +190,6 @@ var Scheduler = {
     async: async_1.async
 };
 exports.Scheduler = Scheduler;
-/**
- * @typedef {Object} Rx.Symbol
- * @property {Symbol|string} rxSubscriber A symbol to use as a property name to
- * retrieve an "Rx safe" Observer from an object. "Rx safety" can be defined as
- * an object that has all of the traits of an Rx Subscriber, including the
- * ability to add and remove subscriptions to the subscription chain and
- * guarantees involving event triggering (can't "next" after unsubscription,
- * etc).
- * @property {Symbol|string} observable A symbol to use as a property name to
- * retrieve an Observable as defined by the [ECMAScript "Observable" spec](https://github.com/zenparsing/es-observable).
- * @property {Symbol|string} iterator The ES6 symbol to use as a property name
- * to retrieve an iterator from an object.
- */
 var Symbol = {
     rxSubscriber: rxSubscriber_1.rxSubscriber,
     observable: observable_1.observable,

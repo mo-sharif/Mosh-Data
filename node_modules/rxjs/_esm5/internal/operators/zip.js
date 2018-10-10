@@ -1,9 +1,5 @@
 /** PURE_IMPORTS_START _observable_zip PURE_IMPORTS_END */
 import { zip as zipStatic } from '../observable/zip';
-/* tslint:enable:max-line-length */
-/**
- * @deprecated Deprecated in favor of static zip.
- */
 export function zip() {
     var observables = [];
     for (var _i = 0; _i < arguments.length; _i++) {

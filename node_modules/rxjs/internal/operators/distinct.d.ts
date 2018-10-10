@@ -17,28 +17,35 @@ import { MonoTypeOperatorFunction } from '../types';
  * use might result in memory leaks. To help alleviate this in some scenarios, an optional `flushes` parameter is also provided so
  * that the internal `Set` can be "flushed", basically clearing it of values.
  *
- * @example <caption>A simple example with numbers</caption>
- * Observable.of(1, 1, 2, 2, 2, 1, 2, 3, 4, 3, 2, 1)
- *   .distinct()
+ * ## Examples
+ * A simple example with numbers
+ * ```javascript
+ * of(1, 1, 2, 2, 2, 1, 2, 3, 4, 3, 2, 1).pipe(
+ *     distinct(),
+ *   )
  *   .subscribe(x => console.log(x)); // 1, 2, 3, 4
+ * ```
  *
- * @example <caption>An example using a keySelector function</caption>
+ * An example using a keySelector function
+ * ```typescript
  * interface Person {
  *    age: number,
  *    name: string
  * }
  *
- * Observable.of<Person>(
+ * of<Person>(
  *     { age: 4, name: 'Foo'},
  *     { age: 7, name: 'Bar'},
- *     { age: 5, name: 'Foo'})
- *     .distinct((p: Person) => p.name)
- *     .subscribe(x => console.log(x));
+ *     { age: 5, name: 'Foo'},
+ *   ).pipe(
+ *     distinct((p: Person) => p.name),
+ *   )
+ *   .subscribe(x => console.log(x));
  *
  * // displays:
  * // { age: 4, name: 'Foo' }
  * // { age: 7, name: 'Bar' }
- *
+ * ```
  * @see {@link distinctUntilChanged}
  * @see {@link distinctUntilKeyChanged}
  *
@@ -61,6 +68,6 @@ export declare class DistinctSubscriber<T, K> extends OuterSubscriber<T, T> {
     notifyNext(outerValue: T, innerValue: T, outerIndex: number, innerIndex: number, innerSub: InnerSubscriber<T, T>): void;
     notifyError(error: any, innerSub: InnerSubscriber<T, T>): void;
     protected _next(value: T): void;
-    private _useKeySelector(value);
-    private _finalizeNext(key, value);
+    private _useKeySelector;
+    private _finalizeNext;
 }

@@ -12,7 +12,6 @@ export const subscribeToIterable = (iterable) => (subscriber) => {
             break;
         }
     } while (true);
-    // Finalize the iterator if it happens to be a Generator
     if (typeof iterator.return === 'function') {
         subscriber.add(() => {
             if (iterator.return) {

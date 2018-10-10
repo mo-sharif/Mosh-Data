@@ -9,7 +9,7 @@ import { Observer, OperatorFunction } from '../types';
  *
  * <span class="informal">Checks to see of all values emitted by both observables are equal, in order.</span>
  *
- * <img src="./img/sequenceEqual.png" width="100%">
+ * ![](sequenceEqual.png)
  *
  * `sequenceEqual` subscribes to two observables and buffers incoming values from each observable. Whenever either
  * observable emits a value, the value is buffered and the buffers are shifted and compared from the bottom
@@ -18,30 +18,32 @@ import { Observer, OperatorFunction } from '../types';
  * observable emits before completing, the returned observable will emit `false` and complete. If one observable never
  * completes or emits after the other complets, the returned observable will never complete.
  *
- * @example <caption>figure out if the Konami code matches</caption>
- * var code = Rx.Observable.from([
- *  "ArrowUp",
- *  "ArrowUp",
- *  "ArrowDown",
- *  "ArrowDown",
- *  "ArrowLeft",
- *  "ArrowRight",
- *  "ArrowLeft",
- *  "ArrowRight",
- *  "KeyB",
- *  "KeyA",
- *  "Enter" // no start key, clearly.
+ * ## Example
+ * figure out if the Konami code matches
+ * ```javascript
+ * const codes = from([
+ *   'ArrowUp',
+ *   'ArrowUp',
+ *   'ArrowDown',
+ *   'ArrowDown',
+ *   'ArrowLeft',
+ *   'ArrowRight',
+ *   'ArrowLeft',
+ *   'ArrowRight',
+ *   'KeyB',
+ *   'KeyA',
+ *   'Enter', // no start key, clearly.
  * ]);
  *
- * var keys = Rx.Observable.fromEvent(document, 'keyup')
- *  .map(e => e.code);
- * var matches = keys.bufferCount(11, 1)
- *  .mergeMap(
- *    last11 =>
- *      Rx.Observable.from(last11)
- *        .sequenceEqual(code)
- *   );
+ * const keys = fromEvent(document, 'keyup').pipe(map(e => e.code));
+ * const matches = keys.pipe(
+ *   bufferCount(11, 1),
+ *   mergeMap(
+ *     last11 => from(last11).pipe(sequenceEqual(codes)),
+ *   ),
+ * );
  * matches.subscribe(matched => console.log('Successful cheat at Contra? ', matched));
+ * ```
  *
  * @see {@link combineLatest}
  * @see {@link zip}
@@ -78,4 +80,5 @@ export declare class SequenceEqualSubscriber<T, R> extends Subscriber<T> {
     checkValues(): void;
     emit(value: boolean): void;
     nextB(value: T): void;
+    completeB(): void;
 }

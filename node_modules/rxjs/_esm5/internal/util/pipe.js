@@ -1,6 +1,5 @@
 /** PURE_IMPORTS_START _noop PURE_IMPORTS_END */
 import { noop } from './noop';
-/* tslint:enable:max-line-length */
 export function pipe() {
     var fns = [];
     for (var _i = 0; _i < arguments.length; _i++) {
@@ -8,7 +7,6 @@ export function pipe() {
     }
     return pipeFromArray(fns);
 }
-/* @internal */
 export function pipeFromArray(fns) {
     if (!fns) {
         return noop;

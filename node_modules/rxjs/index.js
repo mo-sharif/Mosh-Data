@@ -1,6 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-/* Observable */
 var Observable_1 = require("./internal/Observable");
 exports.Observable = Observable_1.Observable;
 var ConnectableObservable_1 = require("./internal/observable/ConnectableObservable");
@@ -9,7 +8,6 @@ var groupBy_1 = require("./internal/operators/groupBy");
 exports.GroupedObservable = groupBy_1.GroupedObservable;
 var observable_1 = require("./internal/symbol/observable");
 exports.observable = observable_1.observable;
-/* Subjects */
 var Subject_1 = require("./internal/Subject");
 exports.Subject = Subject_1.Subject;
 var BehaviorSubject_1 = require("./internal/BehaviorSubject");
@@ -18,7 +16,6 @@ var ReplaySubject_1 = require("./internal/ReplaySubject");
 exports.ReplaySubject = ReplaySubject_1.ReplaySubject;
 var AsyncSubject_1 = require("./internal/AsyncSubject");
 exports.AsyncSubject = AsyncSubject_1.AsyncSubject;
-/* Schedulers */
 var asap_1 = require("./internal/scheduler/asap");
 exports.asapScheduler = asap_1.asap;
 var async_1 = require("./internal/scheduler/async");
@@ -32,15 +29,12 @@ exports.VirtualTimeScheduler = VirtualTimeScheduler_1.VirtualTimeScheduler;
 exports.VirtualAction = VirtualTimeScheduler_1.VirtualAction;
 var Scheduler_1 = require("./internal/Scheduler");
 exports.Scheduler = Scheduler_1.Scheduler;
-/* Subscription */
 var Subscription_1 = require("./internal/Subscription");
 exports.Subscription = Subscription_1.Subscription;
 var Subscriber_1 = require("./internal/Subscriber");
 exports.Subscriber = Subscriber_1.Subscriber;
-/* Notification */
 var Notification_1 = require("./internal/Notification");
 exports.Notification = Notification_1.Notification;
-/* Utils */
 var pipe_1 = require("./internal/util/pipe");
 exports.pipe = pipe_1.pipe;
 var noop_1 = require("./internal/util/noop");
@@ -49,7 +43,6 @@ var identity_1 = require("./internal/util/identity");
 exports.identity = identity_1.identity;
 var isObservable_1 = require("./internal/util/isObservable");
 exports.isObservable = isObservable_1.isObservable;
-/* Error types */
 var ArgumentOutOfRangeError_1 = require("./internal/util/ArgumentOutOfRangeError");
 exports.ArgumentOutOfRangeError = ArgumentOutOfRangeError_1.ArgumentOutOfRangeError;
 var EmptyError_1 = require("./internal/util/EmptyError");
@@ -60,7 +53,6 @@ var UnsubscriptionError_1 = require("./internal/util/UnsubscriptionError");
 exports.UnsubscriptionError = UnsubscriptionError_1.UnsubscriptionError;
 var TimeoutError_1 = require("./internal/util/TimeoutError");
 exports.TimeoutError = TimeoutError_1.TimeoutError;
-/* Static observable creation exports */
 var bindCallback_1 = require("./internal/observable/bindCallback");
 exports.bindCallback = bindCallback_1.bindCallback;
 var bindNodeCallback_1 = require("./internal/observable/bindNodeCallback");
@@ -109,12 +101,10 @@ var using_1 = require("./internal/observable/using");
 exports.using = using_1.using;
 var zip_1 = require("./internal/observable/zip");
 exports.zip = zip_1.zip;
-/* Constants */
 var empty_2 = require("./internal/observable/empty");
 exports.EMPTY = empty_2.EMPTY;
 var never_2 = require("./internal/observable/never");
 exports.NEVER = never_2.NEVER;
-/* Config */
 var config_1 = require("./internal/config");
 exports.config = config_1.config;
 //# sourceMappingURL=index.js.map

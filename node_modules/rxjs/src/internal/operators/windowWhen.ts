@@ -18,7 +18,7 @@ import { OperatorFunction } from '../types';
  * <span class="informal">It's like {@link bufferWhen}, but emits a nested
  * Observable instead of an array.</span>
  *
- * <img src="./img/windowWhen.png" width="100%">
+ * ![](windowWhen.png)
  *
  * Returns an Observable that emits windows of items it collects from the source
  * Observable. The output Observable emits connected, non-overlapping windows.
@@ -26,13 +26,17 @@ import { OperatorFunction } from '../types';
  * produced by the specified `closingSelector` function emits an item. The first
  * window is opened immediately when subscribing to the output Observable.
  *
- * @example <caption>Emit only the first two clicks events in every window of [1-5] random seconds</caption>
- * var clicks = Rx.Observable.fromEvent(document, 'click');
- * var result = clicks
- *   .windowWhen(() => Rx.Observable.interval(1000 + Math.random() * 4000))
- *   .map(win => win.take(2)) // each window has at most 2 emissions
- *   .mergeAll(); // flatten the Observable-of-Observables
+ * ## Example
+ * Emit only the first two clicks events in every window of [1-5] random seconds
+ * ```javascript
+ * const clicks = fromEvent(document, 'click');
+ * const result = clicks.pipe(
+ *   windowWhen(() => interval(1000 + Math.random() * 4000)),
+ *   map(win => win.pipe(take(2))),     // each window has at most 2 emissions
+ *   mergeAll(),                        // flatten the Observable-of-Observables
+ * );
  * result.subscribe(x => console.log(x));
+ * ```
  *
  * @see {@link window}
  * @see {@link windowCount}

@@ -1,8 +1,11 @@
 "use strict";
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    }
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -18,7 +21,7 @@ var SubscriptionLog_1 = require("./SubscriptionLog");
 var VirtualTimeScheduler_1 = require("../scheduler/VirtualTimeScheduler");
 var AsyncScheduler_1 = require("../scheduler/AsyncScheduler");
 var defaultMaxFrame = 750;
-var TestScheduler = /** @class */ (function (_super) {
+var TestScheduler = (function (_super) {
     __extends(TestScheduler, _super);
     function TestScheduler(assertDeepEqual) {
         var _this = _super.call(this, VirtualTimeScheduler_1.VirtualAction, defaultMaxFrame) || this;
@@ -69,18 +72,19 @@ var TestScheduler = /** @class */ (function (_super) {
         });
         return messages;
     };
-    TestScheduler.prototype.expectObservable = function (observable, unsubscriptionMarbles) {
+    TestScheduler.prototype.expectObservable = function (observable, subscriptionMarbles) {
         var _this = this;
-        if (unsubscriptionMarbles === void 0) { unsubscriptionMarbles = null; }
+        if (subscriptionMarbles === void 0) { subscriptionMarbles = null; }
         var actual = [];
         var flushTest = { actual: actual, ready: false };
-        var unsubscriptionFrame = TestScheduler
-            .parseMarblesAsSubscriptions(unsubscriptionMarbles, this.runMode).unsubscribedFrame;
+        var subscriptionParsed = TestScheduler.parseMarblesAsSubscriptions(subscriptionMarbles, this.runMode);
+        var subscriptionFrame = subscriptionParsed.subscribedFrame === Number.POSITIVE_INFINITY ?
+            0 : subscriptionParsed.subscribedFrame;
+        var unsubscriptionFrame = subscriptionParsed.unsubscribedFrame;
         var subscription;
         this.schedule(function () {
             subscription = observable.subscribe(function (x) {
                 var value = x;
-                // Support Observable-of-Observables
                 if (x instanceof Observable_1.Observable) {
                     value = _this.materializeInnerObservable(value, _this.frame);
                 }
@@ -90,7 +94,7 @@ var TestScheduler = /** @class */ (function (_super) {
             }, function () {
                 actual.push({ frame: _this.frame, notification: Notification_1.Notification.createComplete() });
             });
-        }, 0);
+        }, subscriptionFrame);
         if (unsubscriptionFrame !== Number.POSITIVE_INFINITY) {
             this.schedule(function () { return subscription.unsubscribe(); }, unsubscriptionFrame);
         }
@@ -118,23 +122,20 @@ var TestScheduler = /** @class */ (function (_super) {
         };
     };
     TestScheduler.prototype.flush = function () {
+        var _this = this;
         var hotObservables = this.hotObservables;
         while (hotObservables.length > 0) {
             hotObservables.shift().setup();
         }
         _super.prototype.flush.call(this);
-        var flushTests = this.flushTests;
-        var flushTestsCopy = flushTests.slice();
-        for (var i = 0, l = flushTests.length; i < l; i++) {
-            var test_1 = flushTestsCopy[i];
-            if (test_1.ready) {
-                // remove it from the original array, not our copy
-                flushTests.splice(i, 1);
-                this.assertDeepEqual(test_1.actual, test_1.expected);
+        this.flushTests = this.flushTests.filter(function (test) {
+            if (test.ready) {
+                _this.assertDeepEqual(test.actual, test.expected);
+                return false;
             }
-        }
+            return true;
+        });
     };
-    /** @nocollapse */
     TestScheduler.parseMarblesAsSubscriptions = function (marbles, runMode) {
         var _this = this;
         if (runMode === void 0) { runMode = false; }
@@ -154,7 +155,6 @@ var TestScheduler = /** @class */ (function (_super) {
             var c = marbles[i];
             switch (c) {
                 case ' ':
-                    // Whitespace no longer advances time
                     if (!runMode) {
                         advanceFrameBy(1);
                     }
@@ -186,10 +186,7 @@ var TestScheduler = /** @class */ (function (_super) {
                     unsubscriptionFrame = groupStart > -1 ? groupStart : frame;
                     break;
                 default:
-                    // time progression syntax
                     if (runMode && c.match(/^[0-9]$/)) {
-                        // Time progression must be preceeded by at least one space
-                        // if it's not at the beginning of the diagram
                         if (i === 0 || marbles[i - 1] === ' ') {
                             var buffer = marbles.slice(i);
                             var match = buffer.match(/^([0-9]+(?:\.[0-9]+)?)(ms|s|m) /);
@@ -234,7 +231,6 @@ var TestScheduler = /** @class */ (function (_super) {
             return new SubscriptionLog_1.SubscriptionLog(subscriptionFrame, unsubscriptionFrame);
         }
     };
-    /** @nocollapse */
     TestScheduler.parseMarbles = function (marbles, values, errorValue, materializeInnerObservables, runMode) {
         var _this = this;
         if (materializeInnerObservables === void 0) { materializeInnerObservables = false; }
@@ -250,7 +246,6 @@ var TestScheduler = /** @class */ (function (_super) {
         var getValue = typeof values !== 'object' ?
             function (x) { return x; } :
             function (x) {
-                // Support Observable-of-Observables
                 if (materializeInnerObservables && values[x] instanceof ColdObservable_1.ColdObservable) {
                     return values[x].messages;
                 }
@@ -266,7 +261,6 @@ var TestScheduler = /** @class */ (function (_super) {
             var c = marbles[i];
             switch (c) {
                 case ' ':
-                    // Whitespace no longer advances time
                     if (!runMode) {
                         advanceFrameBy(1);
                     }
@@ -294,10 +288,7 @@ var TestScheduler = /** @class */ (function (_super) {
                     advanceFrameBy(1);
                     break;
                 default:
-                    // Might be time progression syntax, or a value literal
                     if (runMode && c.match(/^[0-9]$/)) {
-                        // Time progression must be preceeded by at least one space
-                        // if it's not at the beginning of the diagram
                         if (i === 0 || marbles[i - 1] === ' ') {
                             var buffer = marbles.slice(i);
                             var match = buffer.match(/^([0-9]+(?:\.[0-9]+)?)(ms|s|m) /);
@@ -355,13 +346,17 @@ var TestScheduler = /** @class */ (function (_super) {
             expectObservable: this.expectObservable.bind(this),
             expectSubscriptions: this.expectSubscriptions.bind(this),
         };
-        var ret = callback(helpers);
-        this.flush();
-        TestScheduler.frameTimeFactor = prevFrameTimeFactor;
-        this.maxFrames = prevMaxFrames;
-        this.runMode = false;
-        AsyncScheduler_1.AsyncScheduler.delegate = undefined;
-        return ret;
+        try {
+            var ret = callback(helpers);
+            this.flush();
+            return ret;
+        }
+        finally {
+            TestScheduler.frameTimeFactor = prevFrameTimeFactor;
+            this.maxFrames = prevMaxFrames;
+            this.runMode = false;
+            AsyncScheduler_1.AsyncScheduler.delegate = undefined;
+        }
     };
     return TestScheduler;
 }(VirtualTimeScheduler_1.VirtualTimeScheduler));

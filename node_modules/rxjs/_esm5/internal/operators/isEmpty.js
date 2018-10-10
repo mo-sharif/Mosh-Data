@@ -12,11 +12,6 @@ var IsEmptyOperator = /*@__PURE__*/ (function () {
     };
     return IsEmptyOperator;
 }());
-/**
- * We need this JSDoc comment for affecting ESDoc.
- * @ignore
- * @extends {Ignored}
- */
 var IsEmptySubscriber = /*@__PURE__*/ (function (_super) {
     tslib_1.__extends(IsEmptySubscriber, _super);
     function IsEmptySubscriber(destination) {

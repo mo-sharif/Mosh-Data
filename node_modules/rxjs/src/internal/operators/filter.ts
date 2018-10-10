@@ -18,16 +18,19 @@ export function filter<T>(predicate: (value: T, index: number) => boolean,
  * [Array.prototype.filter()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter),
  * it only emits a value from the source if it passes a criterion function.</span>
  *
- * <img src="./img/filter.png" width="100%">
+ * ![](filter.png)
  *
  * Similar to the well-known `Array.prototype.filter` method, this operator
  * takes values from the source Observable, passes them through a `predicate`
  * function and only emits those values that yielded `true`.
  *
- * @example <caption>Emit only click events whose target was a DIV element</caption>
- * var clicks = Rx.Observable.fromEvent(document, 'click');
- * var clicksOnDivs = clicks.filter(ev => ev.target.tagName === 'DIV');
+ * ## Example
+ * Emit only click events whose target was a DIV element
+ * ```javascript
+ * const clicks = fromEvent(document, 'click');
+ * const clicksOnDivs = clicks.pipe(filter(ev => ev.target.tagName === 'DIV'));
  * clicksOnDivs.subscribe(x => console.log(x));
+ * ```
  *
  * @see {@link distinct}
  * @see {@link distinctUntilChanged}

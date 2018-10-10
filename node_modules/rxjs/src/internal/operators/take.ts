@@ -11,17 +11,30 @@ import { MonoTypeOperatorFunction, TeardownLogic } from '../types';
  * <span class="informal">Takes the first `count` values from the source, then
  * completes.</span>
  *
- * <img src="./img/take.png" width="100%">
+ * ![](take.png)
  *
  * `take` returns an Observable that emits only the first `count` values emitted
  * by the source Observable. If the source emits fewer than `count` values then
  * all of its values are emitted. After that, it completes, regardless if the
  * source completes.
  *
- * @example <caption>Take the first 5 seconds of an infinite 1-second interval Observable</caption>
- * var interval = Rx.Observable.interval(1000);
- * var five = interval.take(5);
- * five.subscribe(x => console.log(x));
+ * ## Example
+ * Take the first 5 seconds of an infinite 1-second interval Observable
+ * ```javascript
+ * import { interval } from 'rxjs';
+ * import { take } from 'rxjs/operators';
+ *
+ * const intervalCount = interval(1000);
+ * const takeFive = intervalCount.pipe(take(5));
+ * takeFive.subscribe(x => console.log(x));
+ *
+ * // Logs:
+ * // 0
+ * // 1
+ * // 2
+ * // 3
+ * // 4
+ * ```
  *
  * @see {@link takeLast}
  * @see {@link takeUntil}

@@ -19,7 +19,7 @@ export function reduce<T, R>(accumulator: (acc: R, value: T, index: number) => R
  * using an accumulator function that knows how to join a new source value into
  * the accumulation from the past.</span>
  *
- * <img src="./img/reduce.png" width="100%">
+ * ![](reduce.png)
  *
  * Like
  * [Array.prototype.reduce()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce),
@@ -34,13 +34,17 @@ export function reduce<T, R>(accumulator: (acc: R, value: T, index: number) => R
  * that value will be used as the initial value for the accumulator. If no seed
  * value is specified, the first item of the source is used as the seed.
  *
- * @example <caption>Count the number of click events that happened in 5 seconds</caption>
- * var clicksInFiveSeconds = Rx.Observable.fromEvent(document, 'click')
- *   .takeUntil(Rx.Observable.interval(5000));
- * var ones = clicksInFiveSeconds.mapTo(1);
- * var seed = 0;
- * var count = ones.reduce((acc, one) => acc + one, seed);
+ * ## Example
+ * Count the number of click events that happened in 5 seconds
+ * ```javascript
+ * const clicksInFiveSeconds = fromEvent(document, 'click').pipe(
+ *   takeUntil(interval(5000)),
+ * );
+ * const ones = clicksInFiveSeconds.pipe(mapTo(1));
+ * const seed = 0;
+ * const count = ones.reduce((acc, one) => acc + one, seed);
  * count.subscribe(x => console.log(x));
+ * ```
  *
  * @see {@link count}
  * @see {@link expand}
@@ -67,8 +71,9 @@ export function reduce<T, R>(accumulator: (acc: R, value: T, index?: number) => 
     };
   }
   return function reduceOperatorFunction(source: Observable<T>): Observable<R> {
-    return pipe(scan<T, T | R>((acc, value, index) => {
-      return accumulator(<R>acc, value, index + 1);
-    }), takeLast(1))(source) as Observable<R>;
+    return pipe(
+      scan((acc: R, value: T, index: number): R => accumulator(acc, value, index + 1)),
+      takeLast(1),
+    )(source);
   };
 }

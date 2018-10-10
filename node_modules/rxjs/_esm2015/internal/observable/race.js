@@ -3,8 +3,6 @@ import { fromArray } from './fromArray';
 import { OuterSubscriber } from '../OuterSubscriber';
 import { subscribeToResult } from '../util/subscribeToResult';
 export function race(...observables) {
-    // if the only argument is an array, it was most likely called with
-    // `race([obs1, obs2, ...])`
     if (observables.length === 1) {
         if (isArray(observables[0])) {
             observables = observables[0];
@@ -20,11 +18,6 @@ export class RaceOperator {
         return source.subscribe(new RaceSubscriber(subscriber));
     }
 }
-/**
- * We need this JSDoc comment for affecting ESDoc.
- * @ignore
- * @extends {Ignored}
- */
 export class RaceSubscriber extends OuterSubscriber {
     constructor(destination) {
         super(destination);

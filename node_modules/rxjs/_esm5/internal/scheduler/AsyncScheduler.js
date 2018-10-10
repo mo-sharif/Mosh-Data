@@ -16,20 +16,7 @@ var AsyncScheduler = /*@__PURE__*/ (function (_super) {
             }
         }) || this;
         _this.actions = [];
-        /**
-         * A flag to indicate whether the Scheduler is currently executing a batch of
-         * queued actions.
-         * @type {boolean}
-         * @deprecated internal use only
-         */
         _this.active = false;
-        /**
-         * An internal ID used to track the latest asynchronous task such as those
-         * coming from `setTimeout`, `setInterval`, `requestAnimationFrame`, and
-         * others.
-         * @type {any}
-         * @deprecated internal use only
-         */
         _this.scheduled = undefined;
         return _this;
     }
@@ -56,7 +43,7 @@ var AsyncScheduler = /*@__PURE__*/ (function (_super) {
             if (error = action.execute(action.state, action.delay)) {
                 break;
             }
-        } while (action = actions.shift()); // exhaust the scheduler queue
+        } while (action = actions.shift());
         this.active = false;
         if (error) {
             while (action = actions.shift()) {

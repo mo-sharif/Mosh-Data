@@ -2,8 +2,8 @@ import { distinctUntilChanged } from './distinctUntilChanged';
 import { MonoTypeOperatorFunction } from '../types';
 
 /* tslint:disable:max-line-length */
-export function distinctUntilKeyChanged<T>(key: string): MonoTypeOperatorFunction<T>;
-export function distinctUntilKeyChanged<T, K>(key: string, compare: (x: K, y: K) => boolean): MonoTypeOperatorFunction<T>;
+export function distinctUntilKeyChanged<T>(key: keyof T): MonoTypeOperatorFunction<T>;
+export function distinctUntilKeyChanged<T, K extends keyof T>(key: K, compare: (x: T[K], y: T[K]) => boolean): MonoTypeOperatorFunction<T>;
 /* tslint:enable:max-line-length */
 
 /**
@@ -14,45 +14,52 @@ export function distinctUntilKeyChanged<T, K>(key: string, compare: (x: K, y: K)
  *
  * If a comparator function is not provided, an equality check is used by default.
  *
- * @example <caption>An example comparing the name of persons</caption>
- *
+ * ## Examples
+ * An example comparing the name of persons
+ * ```typescript
  *  interface Person {
  *     age: number,
  *     name: string
  *  }
  *
- * Observable.of<Person>(
+ * of<Person>(
  *     { age: 4, name: 'Foo'},
  *     { age: 7, name: 'Bar'},
  *     { age: 5, name: 'Foo'},
- *     { age: 6, name: 'Foo'})
- *     .distinctUntilKeyChanged('name')
- *     .subscribe(x => console.log(x));
+ *     { age: 6, name: 'Foo'},
+ *   ).pipe(
+ *     distinctUntilKeyChanged('name'),
+ *   )
+ *   .subscribe(x => console.log(x));
  *
  * // displays:
  * // { age: 4, name: 'Foo' }
  * // { age: 7, name: 'Bar' }
  * // { age: 5, name: 'Foo' }
+ * ```
  *
- * @example <caption>An example comparing the first letters of the name</caption>
- *
+ * An example comparing the first letters of the name
+ * ```typescript
  * interface Person {
  *     age: number,
  *     name: string
  *  }
  *
- * Observable.of<Person>(
+ * of<Person>(
  *     { age: 4, name: 'Foo1'},
  *     { age: 7, name: 'Bar'},
  *     { age: 5, name: 'Foo2'},
- *     { age: 6, name: 'Foo3'})
- *     .distinctUntilKeyChanged('name', (x: string, y: string) => x.substring(0, 3) === y.substring(0, 3))
- *     .subscribe(x => console.log(x));
+ *     { age: 6, name: 'Foo3'},
+ *   ).pipe(
+ *     distinctUntilKeyChanged('name', (x: string, y: string) => x.substring(0, 3) === y.substring(0, 3)),
+ *   )
+ *   .subscribe(x => console.log(x));
  *
  * // displays:
  * // { age: 4, name: 'Foo1' }
  * // { age: 7, name: 'Bar' }
  * // { age: 5, name: 'Foo2' }
+ * ```
  *
  * @see {@link distinct}
  * @see {@link distinctUntilChanged}
@@ -63,6 +70,6 @@ export function distinctUntilKeyChanged<T, K>(key: string, compare: (x: K, y: K)
  * @method distinctUntilKeyChanged
  * @owner Observable
  */
-export function distinctUntilKeyChanged<T>(key: string, compare?: (x: T, y: T) => boolean): MonoTypeOperatorFunction<T> {
+export function distinctUntilKeyChanged<T, K extends keyof T>(key: K, compare?: (x: T[K], y: T[K]) => boolean): MonoTypeOperatorFunction<T> {
   return distinctUntilChanged((x: T, y: T) => compare ? compare(x[key], y[key]) : x[key] === y[key]);
 }

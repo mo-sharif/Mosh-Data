@@ -4,9 +4,6 @@ import { Subscription } from './Subscription';
 import { ObserveOnSubscriber } from './operators/observeOn';
 import { ObjectUnsubscribedError } from './util/ObjectUnsubscribedError';
 import { SubjectSubscription } from './SubjectSubscription';
-/**
- * @class ReplaySubject<T>
- */
 export class ReplaySubject extends Subject {
     constructor(bufferSize = Number.POSITIVE_INFINITY, windowTime = Number.POSITIVE_INFINITY, scheduler) {
         super();
@@ -26,8 +23,6 @@ export class ReplaySubject extends Subject {
     nextInfiniteTimeWindow(value) {
         const _events = this._events;
         _events.push(value);
-        // Since this method is invoked in every next() call than the buffer
-        // can overgrow the max size only by one item
         if (_events.length > this._bufferSize) {
             _events.shift();
         }
@@ -38,9 +33,7 @@ export class ReplaySubject extends Subject {
         this._trimBufferThenGetEvents();
         super.next(value);
     }
-    /** @deprecated This is an internal implementation detail, do not use. */
     _subscribe(subscriber) {
-        // When `_infiniteTimeWindow === true` then the buffer is already trimmed
         const _infiniteTimeWindow = this._infiniteTimeWindow;
         const _events = _infiniteTimeWindow ? this._events : this._trimBufferThenGetEvents();
         const scheduler = this.scheduler;
@@ -87,9 +80,6 @@ export class ReplaySubject extends Subject {
         const _events = this._events;
         const eventsCount = _events.length;
         let spliceCount = 0;
-        // Trim events that fall out of the time window.
-        // Start at the front of the list. Break early once
-        // we encounter an event that falls within the window.
         while (spliceCount < eventsCount) {
             if ((now - _events[spliceCount].time) < _windowTime) {
                 break;

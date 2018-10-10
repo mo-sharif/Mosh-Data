@@ -11,7 +11,7 @@ import { empty } from './empty';
  * is subscribed.
  * </span>
  *
- * <img src="./img/defer.png" width="100%">
+ * ![](defer.png)
  *
  * `defer` allows you to create the Observable only when the Observer
  * subscribes, and create a fresh Observable for each Observer. It waits until
@@ -21,13 +21,13 @@ import { empty } from './empty';
  * same Observable, in fact each subscriber gets its own individual
  * Observable.
  *
- * @example <caption>Subscribe to either an Observable of clicks or an Observable of interval, at random</caption>
- * var clicksOrInterval = Rx.Observable.defer(function () {
- *   if (Math.random() > 0.5) {
- *     return Rx.Observable.fromEvent(document, 'click');
- *   } else {
- *     return Rx.Observable.interval(1000);
- *   }
+ * ## Example
+ * ### Subscribe to either an Observable of clicks or an Observable of interval, at random
+ * ```javascript
+ * const clicksOrInterval = defer(function () {
+ *   return Math.random() > 0.5
+ *     ? fromEvent(document, 'click')
+ *     : interval(1000);
  * });
  * clicksOrInterval.subscribe(x => console.log(x));
  *
@@ -36,8 +36,9 @@ import { empty } from './empty';
  * // for clicks anywhere on the "document"; when document is clicked it
  * // will log a MouseEvent object to the console. If the result is less
  * // than 0.5 it will emit ascending numbers, one every second(1000ms).
+ * ```
  *
- * @see {@link create}
+ * @see {@link Observable}
  *
  * @param {function(): SubscribableOrPromise} observableFactory The Observable
  * factory function to invoke for each Observer that subscribes to the output

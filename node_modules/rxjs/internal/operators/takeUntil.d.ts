@@ -7,7 +7,7 @@ import { MonoTypeOperatorFunction } from '../types';
  * <span class="informal">Lets values pass until a second Observable,
  * `notifier`, emits a value. Then, it completes.</span>
  *
- * <img src="./img/takeUntil.png" width="100%">
+ * ![](takeUntil.png)
  *
  * `takeUntil` subscribes and begins mirroring the source Observable. It also
  * monitors a second Observable, `notifier` that you provide. If the `notifier`
@@ -15,11 +15,14 @@ import { MonoTypeOperatorFunction } from '../types';
  * and completes. If the `notifier` doesn't emit any value and completes
  * then `takeUntil` will pass all values.
  *
- * @example <caption>Tick every second until the first click happens</caption>
- * var interval = Rx.Observable.interval(1000);
- * var clicks = Rx.Observable.fromEvent(document, 'click');
- * var result = interval.takeUntil(clicks);
+ * ## Example
+ * Tick every second until the first click happens
+ * ```javascript
+ * const interval = interval(1000);
+ * const clicks = fromEvent(document, 'click');
+ * const result = interval.pipe(takeUntil(clicks));
  * result.subscribe(x => console.log(x));
+ * ```
  *
  * @see {@link take}
  * @see {@link takeLast}

@@ -6,7 +6,7 @@ import { MonoTypeOperatorFunction, SubscribableOrPromise } from '../types';
  * <span class="informal">It's like {@link debounceTime}, but the time span of
  * emission silence is determined by a second Observable.</span>
  *
- * <img src="./img/debounce.png" width="100%">
+ * ![](debounce.png)
  *
  * `debounce` delays values emitted by the source Observable, but drops previous
  * pending delayed emissions if a new value arrives on the source Observable.
@@ -22,10 +22,13 @@ import { MonoTypeOperatorFunction, SubscribableOrPromise } from '../types';
  * delay-like operator since output emissions do not necessarily occur at the
  * same time as they did on the source Observable.
  *
- * @example <caption>Emit the most recent click after a burst of clicks</caption>
- * var clicks = Rx.Observable.fromEvent(document, 'click');
- * var result = clicks.debounce(() => Rx.Observable.interval(1000));
+ * ## Example
+ * Emit the most recent click after a burst of clicks
+ * ```javascript
+ * const clicks = fromEvent(document, 'click');
+ * const result = clicks.pipe(debounce(() => interval(1000)));
  * result.subscribe(x => console.log(x));
+ * ```
  *
  * @see {@link audit}
  * @see {@link debounceTime}

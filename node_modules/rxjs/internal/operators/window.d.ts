@@ -7,7 +7,7 @@ import { OperatorFunction } from '../types';
  * <span class="informal">It's like {@link buffer}, but emits a nested Observable
  * instead of an array.</span>
  *
- * <img src="./img/window.png" width="100%">
+ * ![](window.png)
  *
  * Returns an Observable that emits windows of items it collects from the source
  * Observable. The output Observable emits connected, non-overlapping
@@ -15,14 +15,18 @@ import { OperatorFunction } from '../types';
  * Observable `windowBoundaries` emits an item. Because each window is an
  * Observable, the output is a higher-order Observable.
  *
- * @example <caption>In every window of 1 second each, emit at most 2 click events</caption>
- * var clicks = Rx.Observable.fromEvent(document, 'click');
- * var interval = Rx.Observable.interval(1000);
- * var result = clicks.window(interval)
- *   .map(win => win.take(2)) // each window has at most 2 emissions
- *   .mergeAll(); // flatten the Observable-of-Observables
+ * ## Example
+ * In every window of 1 second each, emit at most 2 click events
+ * ```javascript
+ * const clicks = fromEvent(document, 'click');
+ * const interval = interval(1000);
+ * const result = clicks.pipe(
+ *   window(interval),
+ *   map(win => win.take(2)), // each window has at most 2 emissions
+ *   mergeAll(),              // flatten the Observable-of-Observables
+ * );
  * result.subscribe(x => console.log(x));
- *
+ * ```
  * @see {@link windowCount}
  * @see {@link windowTime}
  * @see {@link windowToggle}

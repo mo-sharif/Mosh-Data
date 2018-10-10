@@ -6,18 +6,23 @@ import { OperatorFunction } from '../types';
  * <span class="informal">Collects values from the past as an array, and emits
  * that array only when another Observable emits.</span>
  *
- * <img src="./img/buffer.png" width="100%">
+ * ![](buffer.png)
  *
  * Buffers the incoming Observable values until the given `closingNotifier`
  * Observable emits a value, at which point it emits the buffer on the output
  * Observable and starts a new buffer internally, awaiting the next time
  * `closingNotifier` emits.
  *
- * @example <caption>On every click, emit array of most recent interval events</caption>
- * var clicks = Rx.Observable.fromEvent(document, 'click');
- * var interval = Rx.Observable.interval(1000);
- * var buffered = interval.buffer(clicks);
+ * ## Example
+ *
+ * On every click, emit array of most recent interval events
+ *
+ * ```javascript
+ * const clicks = fromEvent(document, 'click');
+ * const interval = interval(1000);
+ * const buffered = interval.pipe(buffer(clicks));
  * buffered.subscribe(x => console.log(x));
+ * ```
  *
  * @see {@link bufferCount}
  * @see {@link bufferTime}

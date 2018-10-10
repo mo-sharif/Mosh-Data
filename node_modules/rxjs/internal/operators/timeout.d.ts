@@ -5,7 +5,7 @@ import { MonoTypeOperatorFunction, SchedulerLike } from '../types';
  *
  * <span class="informal">Timeouts on Observable that doesn't emit values fast enough.</span>
  *
- * <img src="./img/timeout.png" width="100%">
+ * ![](timeout.png)
  *
  * `timeout` operator accepts as an argument either a number or a Date.
  *
@@ -28,38 +28,45 @@ import { MonoTypeOperatorFunction, SchedulerLike } from '../types';
  * `timeout` accepts also a Scheduler as a second parameter. It is used to schedule moment (or moments)
  * when returned Observable will check if source stream emitted value or completed.
  *
- * @example <caption>Check if ticks are emitted within certain timespan</caption>
- * const seconds = Rx.Observable.interval(1000);
+ * ## Examples
+ * Check if ticks are emitted within certain timespan
+ * ```javascript
+ * const seconds = interval(1000);
  *
- * seconds.timeout(1100) // Let's use bigger timespan to be safe,
- *                       // since `interval` might fire a bit later then scheduled.
+ * seconds.pipe(timeout(1100))      // Let's use bigger timespan to be safe,
+ *                                  // since `interval` might fire a bit later then scheduled.
  * .subscribe(
  *     value => console.log(value), // Will emit numbers just as regular `interval` would.
- *     err => console.log(err) // Will never be called.
+ *     err => console.log(err),     // Will never be called.
  * );
  *
- * seconds.timeout(900).subscribe(
+ * seconds.pipe(timeout(900))
+ * .subscribe(
  *     value => console.log(value), // Will never be called.
- *     err => console.log(err) // Will emit error before even first value is emitted,
- *                             // since it did not arrive within 900ms period.
+ *     err => console.log(err),     // Will emit error before even first value is emitted,
+ *                                  // since it did not arrive within 900ms period.
  * );
+ * ```
  *
- * @example <caption>Use Date to check if Observable completed</caption>
- * const seconds = Rx.Observable.interval(1000);
+ * Use Date to check if Observable completed
+ * ```javascript
+ * const seconds = interval(1000);
  *
- * seconds.timeout(new Date("December 17, 2020 03:24:00"))
+ * seconds.pipe(
+ *   timeout(new Date("December 17, 2020 03:24:00")),
+ * )
  * .subscribe(
  *     value => console.log(value), // Will emit values as regular `interval` would
  *                                  // until December 17, 2020 at 03:24:00.
- *     err => console.log(err) // On December 17, 2020 at 03:24:00 it will emit an error,
- *                             // since Observable did not complete by then.
+ *     err => console.log(err)      // On December 17, 2020 at 03:24:00 it will emit an error,
+ *                                  // since Observable did not complete by then.
  * );
- *
+ * ```
  * @see {@link timeoutWith}
  *
  * @param {number|Date} due Number specifying period within which Observable must emit values
  *                          or Date specifying before when Observable should complete
- * @param {Scheduler} [scheduler] Scheduler controlling when timeout checks occur.
+ * @param {SchedulerLike} [scheduler] Scheduler controlling when timeout checks occur.
  * @return {Observable<T>} Observable that mirrors behaviour of source, unless timeout checks fail.
  * @method timeout
  * @owner Observable

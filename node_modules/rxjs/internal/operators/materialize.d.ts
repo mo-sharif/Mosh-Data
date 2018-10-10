@@ -9,7 +9,7 @@ import { OperatorFunction } from '../types';
  * {@link Notification} objects, emitted as `next` on the output Observable.
  * </span>
  *
- * <img src="./img/materialize.png" width="100%">
+ * ![](materialize.png)
  *
  * `materialize` returns an Observable that emits a `next` notification for each
  * `next`, `error`, or `complete` emission of the source Observable. When the
@@ -22,10 +22,12 @@ import { OperatorFunction } from '../types';
  * be consumed as `next` emissions. Use it in conjunction with
  * {@link dematerialize}.
  *
- * @example <caption>Convert a faulty Observable to an Observable of Notifications</caption>
- * var letters = Rx.Observable.of('a', 'b', 13, 'd');
- * var upperCase = letters.map(x => x.toUpperCase());
- * var materialized = upperCase.materialize();
+ * ## Example
+ * Convert a faulty Observable to an Observable of Notifications
+ * ```javascript
+ * const letters = of('a', 'b', 13, 'd');
+ * const upperCase = letters.pipe(map(x => x.toUpperCase()));
+ * const materialized = upperCase.pipe(materialize());
  * materialized.subscribe(x => console.log(x));
  *
  * // Results in the following:
@@ -34,6 +36,7 @@ import { OperatorFunction } from '../types';
  * // - Notification {kind: "E", value: undefined, error: TypeError:
  * //   x.toUpperCase is not a function at MapSubscriber.letters.map.x
  * //   [as project] (http://1…, hasValue: false}
+ * ```
  *
  * @see {@link Notification}
  * @see {@link dematerialize}

@@ -1,9 +1,4 @@
 import { Subscription } from './Subscription';
-/**
- * We need this JSDoc comment for affecting ESDoc.
- * @ignore
- * @extends {Ignored}
- */
 export class SubjectSubscription extends Subscription {
     constructor(subject, subscriber) {
         super();

@@ -7,7 +7,7 @@ import { MonoTypeOperatorFunction, SubscribableOrPromise } from '../types';
  * <span class="informal">It's like {@link auditTime}, but the silencing
  * duration is determined by a second Observable.</span>
  *
- * <img src="./img/audit.png" width="100%">
+ * ![](audit.png)
  *
  * `audit` is similar to `throttle`, but emits the last value from the silenced
  * time window, instead of the first value. `audit` emits the most recent value
@@ -20,11 +20,14 @@ import { MonoTypeOperatorFunction, SubscribableOrPromise } from '../types';
  * recent source value is emitted on the output Observable, and this process
  * repeats for the next source value.
  *
- * @example <caption>Emit clicks at a rate of at most one click per second</caption>
- * var clicks = Rx.Observable.fromEvent(document, 'click');
- * var result = clicks.audit(ev => Rx.Observable.interval(1000));
- * result.subscribe(x => console.log(x));
+ * ## Example
  *
+ * Emit clicks at a rate of at most one click per second
+ * ```javascript
+ * const clicks = fromEvent(document, 'click');
+ * const result = clicks.pipe(audit(ev => interval(1000)));
+ * result.subscribe(x => console.log(x));
+ * ```
  * @see {@link auditTime}
  * @see {@link debounce}
  * @see {@link delayWhen}

@@ -20,9 +20,9 @@ import {
 
 export class MusicComponent implements OnInit {
   
-  private loading: boolean = false;
-  private results: Observable<ItemsComponent[]>;
-  private searchField: FormControl;
+  public loading: boolean = false;
+  public results: Observable<ItemsComponent[]>;
+  public searchField: FormControl;
 
   constructor(private itunes: SearchService) {}
 

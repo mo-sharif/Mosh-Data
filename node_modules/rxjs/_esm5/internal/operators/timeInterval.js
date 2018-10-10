@@ -9,9 +9,7 @@ export function timeInterval(scheduler) {
     }
     return function (source) {
         return defer(function () {
-            return source.pipe(
-            // HACK: the typings seem off with scan
-            scan(function (_a, value) {
+            return source.pipe(scan(function (_a, value) {
                 var current = _a.current;
                 return ({ value: value, current: scheduler.now(), last: current });
             }, { current: scheduler.now(), value: undefined, last: undefined }), map(function (_a) {

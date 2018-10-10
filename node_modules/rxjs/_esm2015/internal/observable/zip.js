@@ -4,38 +4,6 @@ import { Subscriber } from '../Subscriber';
 import { OuterSubscriber } from '../OuterSubscriber';
 import { subscribeToResult } from '../util/subscribeToResult';
 import { iterator as Symbol_iterator } from '../../internal/symbol/iterator';
-/* tslint:enable:max-line-length */
-/**
- * Combines multiple Observables to create an Observable whose values are calculated from the values, in order, of each
- * of its input Observables.
- *
- * If the latest parameter is a function, this function is used to compute the created value from the input values.
- * Otherwise, an array of the input values is returned.
- *
- * @example <caption>Combine age and name from different sources</caption>
- *
- * let age$ = Observable.of<number>(27, 25, 29);
- * let name$ = Observable.of<string>('Foo', 'Bar', 'Beer');
- * let isDev$ = Observable.of<boolean>(true, true, false);
- *
- * Observable
- *     .zip(age$,
- *          name$,
- *          isDev$,
- *          (age: number, name: string, isDev: boolean) => ({ age, name, isDev }))
- *     .subscribe(x => console.log(x));
- *
- * // outputs
- * // { age: 27, name: 'Foo', isDev: true }
- * // { age: 25, name: 'Bar', isDev: true }
- * // { age: 29, name: 'Beer', isDev: false }
- *
- * @param observables
- * @return {Observable<R>}
- * @static true
- * @name zip
- * @owner Observable
- */
 export function zip(...observables) {
     const resultSelector = observables[observables.length - 1];
     if (typeof resultSelector === 'function') {
@@ -51,11 +19,6 @@ export class ZipOperator {
         return source.subscribe(new ZipSubscriber(subscriber, this.resultSelector));
     }
 }
-/**
- * We need this JSDoc comment for affecting ESDoc.
- * @ignore
- * @extends {Ignored}
- */
 export class ZipSubscriber extends Subscriber {
     constructor(destination, resultSelector, values = Object.create(null)) {
         super(destination);
@@ -79,6 +42,7 @@ export class ZipSubscriber extends Subscriber {
     _complete() {
         const iterators = this.iterators;
         const len = iterators.length;
+        this.unsubscribe();
         if (len === 0) {
             this.destination.complete();
             return;
@@ -87,10 +51,11 @@ export class ZipSubscriber extends Subscriber {
         for (let i = 0; i < len; i++) {
             let iterator = iterators[i];
             if (iterator.stillUnsubscribed) {
-                this.add(iterator.subscribe(iterator, i));
+                const destination = this.destination;
+                destination.add(iterator.subscribe(iterator, i));
             }
             else {
-                this.active--; // not an observable
+                this.active--;
             }
         }
     }
@@ -104,7 +69,6 @@ export class ZipSubscriber extends Subscriber {
         const iterators = this.iterators;
         const len = iterators.length;
         const destination = this.destination;
-        // abort if not all of them have values
         for (let i = 0; i < len; i++) {
             let iterator = iterators[i];
             if (typeof iterator.hasValue === 'function' && !iterator.hasValue()) {
@@ -116,8 +80,6 @@ export class ZipSubscriber extends Subscriber {
         for (let i = 0; i < len; i++) {
             let iterator = iterators[i];
             let result = iterator.next();
-            // check to see if it's completed now that you've gotten
-            // the next value.
             if (iterator.hasCompleted()) {
                 shouldComplete = true;
             }
@@ -189,11 +151,6 @@ class StaticArrayIterator {
         return this.array.length === this.index;
     }
 }
-/**
- * We need this JSDoc comment for affecting ESDoc.
- * @ignore
- * @extends {Ignored}
- */
 class ZipBufferIterator extends OuterSubscriber {
     constructor(destination, parent, observable) {
         super(destination);
@@ -206,8 +163,6 @@ class ZipBufferIterator extends OuterSubscriber {
     [Symbol_iterator]() {
         return this;
     }
-    // NOTE: there is actually a name collision here with Subscriber.next and Iterator.next
-    //    this is legit because `next()` will never be called by a subscription in this case.
     next() {
         const buffer = this.buffer;
         if (buffer.length === 0 && this.isComplete) {

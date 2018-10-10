@@ -1,8 +1,11 @@
 "use strict";
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    }
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -39,7 +42,7 @@ function windowTime(windowTimeSpan) {
     };
 }
 exports.windowTime = windowTime;
-var WindowTimeOperator = /** @class */ (function () {
+var WindowTimeOperator = (function () {
     function WindowTimeOperator(windowTimeSpan, windowCreationInterval, maxWindowSize, scheduler) {
         this.windowTimeSpan = windowTimeSpan;
         this.windowCreationInterval = windowCreationInterval;
@@ -51,7 +54,7 @@ var WindowTimeOperator = /** @class */ (function () {
     };
     return WindowTimeOperator;
 }());
-var CountedSubject = /** @class */ (function (_super) {
+var CountedSubject = (function (_super) {
     __extends(CountedSubject, _super);
     function CountedSubject() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
@@ -71,12 +74,7 @@ var CountedSubject = /** @class */ (function (_super) {
     });
     return CountedSubject;
 }(Subject_1.Subject));
-/**
- * We need this JSDoc comment for affecting ESDoc.
- * @ignore
- * @extends {Ignored}
- */
-var WindowTimeSubscriber = /** @class */ (function (_super) {
+var WindowTimeSubscriber = (function (_super) {
     __extends(WindowTimeSubscriber, _super);
     function WindowTimeSubscriber(destination, windowTimeSpan, windowCreationInterval, maxWindowSize, scheduler) {
         var _this = _super.call(this, destination) || this;

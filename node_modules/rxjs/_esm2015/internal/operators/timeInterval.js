@@ -4,9 +4,7 @@ import { defer } from '../observable/defer';
 import { map } from './map';
 export function timeInterval(scheduler = async) {
     return (source) => defer(() => {
-        return source.pipe(
-        // HACK: the typings seem off with scan
-        scan(({ current }, value) => ({ value, current: scheduler.now(), last: current }), { current: scheduler.now(), value: undefined, last: undefined }), map(({ current, last, value }) => new TimeInterval(value, current - last)));
+        return source.pipe(scan(({ current }, value) => ({ value, current: scheduler.now(), last: current }), { current: scheduler.now(), value: undefined, last: undefined }), map(({ current, last, value }) => new TimeInterval(value, current - last)));
     });
 }
 export class TimeInterval {

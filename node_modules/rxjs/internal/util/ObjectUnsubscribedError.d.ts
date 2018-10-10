@@ -1,3 +1,8 @@
+export interface ObjectUnsubscribedError extends Error {
+}
+export interface ObjectUnsubscribedErrorCtor {
+    new (): ObjectUnsubscribedError;
+}
 /**
  * An error thrown when an action is invalid because the object has been
  * unsubscribed.
@@ -7,6 +12,4 @@
  *
  * @class ObjectUnsubscribedError
  */
-export declare class ObjectUnsubscribedError extends Error {
-    constructor();
-}
+export declare const ObjectUnsubscribedError: ObjectUnsubscribedErrorCtor;

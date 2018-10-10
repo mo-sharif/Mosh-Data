@@ -12,7 +12,7 @@ import { ComponentsModule } from './components/components.module';
 import { AppComponent } from './app.component';
 import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.component';
 import { SearchService } from './services/search.service';
-import { ItemsComponent } from './classes/items/items.component';
+//import { ItemsComponent } from './classes/items/items.component';
 
 @NgModule({
   imports: [
@@ -29,8 +29,7 @@ import { ItemsComponent } from './classes/items/items.component';
   ],
   declarations: [
     AppComponent,
-    AdminLayoutComponent,
-    ItemsComponent
+    AdminLayoutComponent
   ],
   providers: [SearchService],
   bootstrap: [AppComponent]

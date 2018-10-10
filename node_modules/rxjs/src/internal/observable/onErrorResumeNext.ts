@@ -21,13 +21,13 @@ export function onErrorResumeNext<R>(array: ObservableInput<any>[]): Observable<
  *
  * <span class="informal">Execute series of Observables no matter what, even if it means swallowing errors.</span>
  *
- * <img src="./img/onErrorResumeNext.png" width="100%">
+ * ![](onErrorResumeNext.png)
  *
  * `onErrorResumeNext` Will subscribe to each observable source it is provided, in order.
  * If the source it's subscribed to emits an error or completes, it will move to the next source
  * without error.
  *
- * If `onErrorResumeNext` is provided no arguments, or a single, empty array, it will return {@link EMPTY}.
+ * If `onErrorResumeNext` is provided no arguments, or a single, empty array, it will return {@link index/EMPTY}.
  *
  * `onErrorResumeNext` is basically {@link concat}, only it will continue, even if one of its
  * sources emits an error.
@@ -36,8 +36,10 @@ export function onErrorResumeNext<R>(array: ObservableInput<any>[]): Observable<
  * `onErrorResumeNext`. If you want to handle errors thrown in any given source, you can
  * always use the {@link catchError} operator on them before passing them into `onErrorResumeNext`.
  *
- * @example <caption>Subscribe to the next Observable after map fails</caption>
- * import { onErrorResumeNext, of } from 'rxjs/create';
+ * ## Example
+ * Subscribe to the next Observable after map fails</caption>
+ * ```javascript
+ * import { onErrorResumeNext, of } from 'rxjs';
  * import { map } from 'rxjs/operators';
  *
  * onErrorResumeNext(
@@ -52,7 +54,7 @@ export function onErrorResumeNext<R>(array: ObservableInput<any>[]): Observable<
  * .subscribe(
  *   val => console.log(val),
  *   err => console.log(err),          // Will never be called.
- *   () => console.log('done')
+ *   () => console.log('done'),
  * );
  *
  * // Logs:
@@ -63,9 +65,10 @@ export function onErrorResumeNext<R>(array: ObservableInput<any>[]): Observable<
  * // 2
  * // 3
  * // "done"
+ * ```
  *
  * @see {@link concat}
- * @see {@link catch}
+ * @see {@link catchError}
  *
  * @param {...ObservableInput} sources Observables (or anything that *is* observable) passed either directly or as an array.
  * @return {Observable} An Observable that concatenates all sources, one after the other,

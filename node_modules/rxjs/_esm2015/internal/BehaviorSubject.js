@@ -1,8 +1,5 @@
 import { Subject } from './Subject';
 import { ObjectUnsubscribedError } from './util/ObjectUnsubscribedError';
-/**
- * @class BehaviorSubject<T>
- */
 export class BehaviorSubject extends Subject {
     constructor(_value) {
         super();
@@ -11,7 +8,6 @@ export class BehaviorSubject extends Subject {
     get value() {
         return this.getValue();
     }
-    /** @deprecated This is an internal implementation detail, do not use. */
     _subscribe(subscriber) {
         const subscription = super._subscribe(subscriber);
         if (subscription && !subscription.closed) {

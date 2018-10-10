@@ -15,17 +15,20 @@ export function defaultIfEmpty<T, R>(defaultValue?: R): OperatorFunction<T, T | 
  * <span class="informal">If the source Observable turns out to be empty, then
  * this operator will emit a default value.</span>
  *
- * <img src="./img/defaultIfEmpty.png" width="100%">
+ * ![](defaultIfEmpty.png)
  *
  * `defaultIfEmpty` emits the values emitted by the source Observable or a
  * specified default value if the source Observable is empty (completes without
  * having emitted any `next` value).
  *
- * @example <caption>If no clicks happen in 5 seconds, then emit "no clicks"</caption>
- * var clicks = Rx.Observable.fromEvent(document, 'click');
- * var clicksBeforeFive = clicks.takeUntil(Rx.Observable.interval(5000));
- * var result = clicksBeforeFive.defaultIfEmpty('no clicks');
+ * ## Example
+ * If no clicks happen in 5 seconds, then emit "no clicks"
+ * ```javascript
+ * const clicks = fromEvent(document, 'click');
+ * const clicksBeforeFive = clicks.pipe(takeUntil(interval(5000)));
+ * const result = clicksBeforeFive.pipe(defaultIfEmpty('no clicks'));
  * result.subscribe(x => console.log(x));
+ * ```
  *
  * @see {@link empty}
  * @see {@link last}

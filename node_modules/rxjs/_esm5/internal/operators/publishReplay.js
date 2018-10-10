@@ -1,7 +1,6 @@
 /** PURE_IMPORTS_START _ReplaySubject,_multicast PURE_IMPORTS_END */
 import { ReplaySubject } from '../ReplaySubject';
 import { multicast } from './multicast';
-/* tslint:enable:max-line-length */
 export function publishReplay(bufferSize, windowTime, selectorOrScheduler, scheduler) {
     if (selectorOrScheduler && typeof selectorOrScheduler !== 'function') {
         scheduler = selectorOrScheduler;

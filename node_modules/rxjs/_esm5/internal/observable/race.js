@@ -9,8 +9,6 @@ export function race() {
     for (var _i = 0; _i < arguments.length; _i++) {
         observables[_i] = arguments[_i];
     }
-    // if the only argument is an array, it was most likely called with
-    // `race([obs1, obs2, ...])`
     if (observables.length === 1) {
         if (isArray(observables[0])) {
             observables = observables[0];
@@ -30,11 +28,6 @@ var RaceOperator = /*@__PURE__*/ (function () {
     return RaceOperator;
 }());
 export { RaceOperator };
-/**
- * We need this JSDoc comment for affecting ESDoc.
- * @ignore
- * @extends {Ignored}
- */
 var RaceSubscriber = /*@__PURE__*/ (function (_super) {
     tslib_1.__extends(RaceSubscriber, _super);
     function RaceSubscriber(destination) {

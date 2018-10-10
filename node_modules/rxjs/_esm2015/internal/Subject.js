@@ -4,18 +4,12 @@ import { Subscription } from './Subscription';
 import { ObjectUnsubscribedError } from './util/ObjectUnsubscribedError';
 import { SubjectSubscription } from './SubjectSubscription';
 import { rxSubscriber as rxSubscriberSymbol } from '../internal/symbol/rxSubscriber';
-/**
- * @class SubjectSubscriber<T>
- */
 export class SubjectSubscriber extends Subscriber {
     constructor(destination) {
         super(destination);
         this.destination = destination;
     }
 }
-/**
- * @class Subject<T>
- */
 export class Subject extends Observable {
     constructor() {
         super();
@@ -79,7 +73,6 @@ export class Subject extends Observable {
         this.closed = true;
         this.observers = null;
     }
-    /** @deprecated This is an internal implementation detail, do not use. */
     _trySubscribe(subscriber) {
         if (this.closed) {
             throw new ObjectUnsubscribedError();
@@ -88,7 +81,6 @@ export class Subject extends Observable {
             return super._trySubscribe(subscriber);
         }
     }
-    /** @deprecated This is an internal implementation detail, do not use. */
     _subscribe(subscriber) {
         if (this.closed) {
             throw new ObjectUnsubscribedError();
@@ -112,13 +104,9 @@ export class Subject extends Observable {
         return observable;
     }
 }
-/**@nocollapse */
 Subject.create = (destination, source) => {
     return new AnonymousSubject(destination, source);
 };
-/**
- * @class AnonymousSubject<T>
- */
 export class AnonymousSubject extends Subject {
     constructor(destination, source) {
         super();
@@ -143,7 +131,6 @@ export class AnonymousSubject extends Subject {
             this.destination.complete();
         }
     }
-    /** @deprecated This is an internal implementation detail, do not use. */
     _subscribe(subscriber) {
         const { source } = this;
         if (source) {

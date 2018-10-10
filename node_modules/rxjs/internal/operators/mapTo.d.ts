@@ -6,16 +6,19 @@ import { OperatorFunction } from '../types';
  * <span class="informal">Like {@link map}, but it maps every source value to
  * the same output value every time.</span>
  *
- * <img src="./img/mapTo.png" width="100%">
+ * ![](mapTo.png)
  *
  * Takes a constant `value` as argument, and emits that whenever the source
  * Observable emits a value. In other words, ignores the actual source value,
  * and simply uses the emission moment to know when to emit the given `value`.
  *
- * @example <caption>Map every click to the string 'Hi'</caption>
- * var clicks = Rx.Observable.fromEvent(document, 'click');
- * var greetings = clicks.mapTo('Hi');
+ * ## Example
+ * Map every click to the string 'Hi'
+ * ```javascript
+ * const clicks = fromEvent(document, 'click');
+ * const greetings = clicks.pipe(mapTo('Hi'));
  * greetings.subscribe(x => console.log(x));
+ * ```
  *
  * @see {@link map}
  *

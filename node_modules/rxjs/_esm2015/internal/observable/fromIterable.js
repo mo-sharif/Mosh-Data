@@ -14,7 +14,6 @@ export function fromIterable(input, scheduler) {
             const sub = new Subscription();
             let iterator;
             sub.add(() => {
-                // Finalize generators
                 if (iterator && typeof iterator.return === 'function') {
                     iterator.return();
                 }

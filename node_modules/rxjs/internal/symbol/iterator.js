@@ -8,8 +8,5 @@ function getSymbolIterator() {
 }
 exports.getSymbolIterator = getSymbolIterator;
 exports.iterator = getSymbolIterator();
-/**
- * @deprecated use {@link iterator} instead
- */
 exports.$$iterator = exports.iterator;
 //# sourceMappingURL=iterator.js.map

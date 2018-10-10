@@ -1,9 +1,4 @@
 import { Subscriber } from './Subscriber';
-/**
- * We need this JSDoc comment for affecting ESDoc.
- * @ignore
- * @extends {Ignored}
- */
 export class InnerSubscriber extends Subscriber {
     constructor(parent, outerValue, outerIndex) {
         super();

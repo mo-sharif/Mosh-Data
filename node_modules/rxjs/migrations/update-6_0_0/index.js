@@ -21,7 +21,7 @@ function rxjsV6MigrationSchematic(_options) {
         pkg.dependencies['rxjs-compat'] = rxjsCompatVersion;
         tree.overwrite(pkgPath, JSON.stringify(pkg, null, 2));
         context.addTask(new tasks_1.NodePackageInstallTask());
-        return tree; // <3
+        return tree;
     };
 }
 exports.rxjsV6MigrationSchematic = rxjsV6MigrationSchematic;

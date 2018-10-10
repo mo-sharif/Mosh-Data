@@ -60,11 +60,6 @@ var CountedSubject = /*@__PURE__*/ (function (_super) {
     });
     return CountedSubject;
 }(Subject));
-/**
- * We need this JSDoc comment for affecting ESDoc.
- * @ignore
- * @extends {Ignored}
- */
 var WindowTimeSubscriber = /*@__PURE__*/ (function (_super) {
     tslib_1.__extends(WindowTimeSubscriber, _super);
     function WindowTimeSubscriber(destination, windowTimeSpan, windowCreationInterval, maxWindowSize, scheduler) {

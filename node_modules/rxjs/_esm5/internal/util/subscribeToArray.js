@@ -1,7 +1,3 @@
-/**
- * Subscribes to an ArrayLike with a subscriber
- * @param array The array or array-like to subscribe to
- */
 /** PURE_IMPORTS_START  PURE_IMPORTS_END */
 export var subscribeToArray = function (array) {
     return function (subscriber) {

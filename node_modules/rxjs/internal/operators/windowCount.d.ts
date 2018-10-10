@@ -7,7 +7,7 @@ import { OperatorFunction } from '../types';
  * <span class="informal">It's like {@link bufferCount}, but emits a nested
  * Observable instead of an array.</span>
  *
- * <img src="./img/windowCount.png" width="100%">
+ * ![](windowCount.png)
  *
  * Returns an Observable that emits windows of items it collects from the source
  * Observable. The output Observable emits windows every `startWindowEvery`
@@ -18,18 +18,27 @@ import { OperatorFunction } from '../types';
  * started immediately at the start of the source and when each window completes
  * with size `windowSize`.
  *
- * @example <caption>Ignore every 3rd click event, starting from the first one</caption>
- * var clicks = Rx.Observable.fromEvent(document, 'click');
- * var result = clicks.windowCount(3)
- *   .map(win => win.skip(1)) // skip first of every 3 clicks
- *   .mergeAll(); // flatten the Observable-of-Observables
+ * ## Examples
+ * Ignore every 3rd click event, starting from the first one
+ * ```javascript
+ * const clicks = fromEvent(document, 'click');
+ * const result = clicks.pipe(
+ *   windowCount(3)),
+ *   map(win => win.skip(1)), // skip first of every 3 clicks
+ *   mergeAll(),              // flatten the Observable-of-Observables
+ * );
  * result.subscribe(x => console.log(x));
+ * ```
  *
- * @example <caption>Ignore every 3rd click event, starting from the third one</caption>
- * var clicks = Rx.Observable.fromEvent(document, 'click');
- * var result = clicks.windowCount(2, 3)
- *   .mergeAll(); // flatten the Observable-of-Observables
+ * Ignore every 3rd click event, starting from the third one
+ * ```javascript
+ * const clicks = fromEvent(document, 'click');
+ * const result = clicks.pipe(
+ *   windowCount(2, 3),
+ *   mergeAll(),              // flatten the Observable-of-Observables
+ * );
  * result.subscribe(x => console.log(x));
+ * ```
  *
  * @see {@link window}
  * @see {@link windowTime}

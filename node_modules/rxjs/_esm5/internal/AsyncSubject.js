@@ -2,9 +2,6 @@
 import * as tslib_1 from "tslib";
 import { Subject } from './Subject';
 import { Subscription } from './Subscription';
-/**
- * @class AsyncSubject<T>
- */
 var AsyncSubject = /*@__PURE__*/ (function (_super) {
     tslib_1.__extends(AsyncSubject, _super);
     function AsyncSubject() {
@@ -14,7 +11,6 @@ var AsyncSubject = /*@__PURE__*/ (function (_super) {
         _this.hasCompleted = false;
         return _this;
     }
-    /** @deprecated This is an internal implementation detail, do not use. */
     AsyncSubject.prototype._subscribe = function (subscriber) {
         if (this.hasError) {
             subscriber.error(this.thrownError);

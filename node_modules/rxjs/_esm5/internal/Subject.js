@@ -6,9 +6,6 @@ import { Subscription } from './Subscription';
 import { ObjectUnsubscribedError } from './util/ObjectUnsubscribedError';
 import { SubjectSubscription } from './SubjectSubscription';
 import { rxSubscriber as rxSubscriberSymbol } from '../internal/symbol/rxSubscriber';
-/**
- * @class SubjectSubscriber<T>
- */
 var SubjectSubscriber = /*@__PURE__*/ (function (_super) {
     tslib_1.__extends(SubjectSubscriber, _super);
     function SubjectSubscriber(destination) {
@@ -19,9 +16,6 @@ var SubjectSubscriber = /*@__PURE__*/ (function (_super) {
     return SubjectSubscriber;
 }(Subscriber));
 export { SubjectSubscriber };
-/**
- * @class Subject<T>
- */
 var Subject = /*@__PURE__*/ (function (_super) {
     tslib_1.__extends(Subject, _super);
     function Subject() {
@@ -87,7 +81,6 @@ var Subject = /*@__PURE__*/ (function (_super) {
         this.closed = true;
         this.observers = null;
     };
-    /** @deprecated This is an internal implementation detail, do not use. */
     Subject.prototype._trySubscribe = function (subscriber) {
         if (this.closed) {
             throw new ObjectUnsubscribedError();
@@ -96,7 +89,6 @@ var Subject = /*@__PURE__*/ (function (_super) {
             return _super.prototype._trySubscribe.call(this, subscriber);
         }
     };
-    /** @deprecated This is an internal implementation detail, do not use. */
     Subject.prototype._subscribe = function (subscriber) {
         if (this.closed) {
             throw new ObjectUnsubscribedError();
@@ -119,16 +111,12 @@ var Subject = /*@__PURE__*/ (function (_super) {
         observable.source = this;
         return observable;
     };
-    /**@nocollapse */
     Subject.create = function (destination, source) {
         return new AnonymousSubject(destination, source);
     };
     return Subject;
 }(Observable));
 export { Subject };
-/**
- * @class AnonymousSubject<T>
- */
 var AnonymousSubject = /*@__PURE__*/ (function (_super) {
     tslib_1.__extends(AnonymousSubject, _super);
     function AnonymousSubject(destination, source) {
@@ -155,7 +143,6 @@ var AnonymousSubject = /*@__PURE__*/ (function (_super) {
             this.destination.complete();
         }
     };
-    /** @deprecated This is an internal implementation detail, do not use. */
     AnonymousSubject.prototype._subscribe = function (subscriber) {
         var source = this.source;
         if (source) {

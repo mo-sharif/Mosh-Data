@@ -23,6 +23,9 @@ exports.subscribeTo = function (result) {
             }
         };
     }
+    else if (result && typeof result[observable_1.observable] === 'function') {
+        return subscribeToObservable_1.subscribeToObservable(result);
+    }
     else if (isArrayLike_1.isArrayLike(result)) {
         return subscribeToArray_1.subscribeToArray(result);
     }
@@ -31,9 +34,6 @@ exports.subscribeTo = function (result) {
     }
     else if (result && typeof result[iterator_1.iterator] === 'function') {
         return subscribeToIterable_1.subscribeToIterable(result);
-    }
-    else if (result && typeof result[observable_1.observable] === 'function') {
-        return subscribeToObservable_1.subscribeToObservable(result);
     }
     else {
         var value = isObject_1.isObject(result) ? 'an invalid object' : "'" + result + "'";

@@ -12,13 +12,13 @@ export interface WebSocketSubjectConfig<T> {
     /** @deprecated use {@link deserializer} */
     resultSelector?: (e: MessageEvent) => T;
     /**
-     * A serializer used for messages arriving on the over the socket from the
-     * server. Defaults to JSON.parse.
+     * A serializer used to create messages from passed values before the
+     * messages are sent to the server. Defaults to JSON.stringify.
      */
     serializer?: (value: T) => WebSocketMessage;
     /**
-     * A deserializer used to create messages from passed values before the
-     * messages are sent to the server. Defaults to JSON.stringify
+     * A deserializer used for messages arriving on the socket from the
+     * server. Defaults to JSON.parse.
      */
     deserializer?: (e: MessageEvent) => T;
     /**
@@ -58,10 +58,10 @@ export declare class WebSocketSubject<T> extends AnonymousSubject<T> {
     private _socket;
     constructor(urlConfigOrSource: string | WebSocketSubjectConfig<T> | Observable<T>, destination?: Observer<T>);
     lift<R>(operator: Operator<T, R>): WebSocketSubject<R>;
-    private _resetState();
+    private _resetState;
     /**
      * Creates an {@link Observable}, that when subscribed to, sends a message,
-     * defined be the `subMsg` function, to the server over the socket to begin a
+     * defined by the `subMsg` function, to the server over the socket to begin a
      * subscription to data over that socket. Once data arrives, the
      * `messageFilter` argument will be used to select the appropriate data for
      * the resulting Observable. When teardown occurs, either due to
@@ -78,7 +78,7 @@ export declare class WebSocketSubject<T> extends AnonymousSubject<T> {
      * from the server for the output stream.
      */
     multiplex(subMsg: () => any, unsubMsg: () => any, messageFilter: (value: T) => boolean): Observable<any>;
-    private _connectSocket();
+    private _connectSocket;
     /** @deprecated This is an internal implementation detail, do not use. */
     _subscribe(subscriber: Subscriber<T>): Subscription;
     unsubscribe(): void;

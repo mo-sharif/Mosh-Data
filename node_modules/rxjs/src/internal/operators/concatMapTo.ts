@@ -16,7 +16,7 @@ export function concatMapTo<T, I, R>(observable: ObservableInput<I>, resultSelec
  * <span class="informal">It's like {@link concatMap}, but maps each value
  * always to the same inner Observable.</span>
  *
- * <img src="./img/concatMapTo.png" width="100%">
+ * ![](concatMapTo.png)
  *
  * Maps each source value to the given Observable `innerObservable` regardless
  * of the source value, and then flattens those resulting Observables into one
@@ -32,9 +32,13 @@ export function concatMapTo<T, I, R>(observable: ObservableInput<I>, resultSelec
  * Note: `concatMapTo` is equivalent to `mergeMapTo` with concurrency parameter
  * set to `1`.
  *
- * @example <caption>For each click event, tick every second from 0 to 3, with no concurrency</caption>
- * var clicks = Rx.Observable.fromEvent(document, 'click');
- * var result = clicks.concatMapTo(Rx.Observable.interval(1000).take(4));
+ * ## Example
+ * For each click event, tick every second from 0 to 3, with no concurrency
+ * ```javascript
+ * const clicks = fromEvent(document, 'click');
+ * const result = clicks.pipe(
+ *   concatMapTo(interval(1000).pipe(take(4))),
+ * );
  * result.subscribe(x => console.log(x));
  *
  * // Results in the following:
@@ -42,6 +46,7 @@ export function concatMapTo<T, I, R>(observable: ObservableInput<I>, resultSelec
  * // For every click on the "document" it will emit values 0 to 3 spaced
  * // on a 1000ms interval
  * // one click = 1000ms-> 0 -1000ms-> 1 -1000ms-> 2 -1000ms-> 3
+ * ```
  *
  * @see {@link concat}
  * @see {@link concatAll}

@@ -6,8 +6,5 @@ export function getSymbolIterator() {
     return Symbol.iterator;
 }
 export var iterator = /*@__PURE__*/ getSymbolIterator();
-/**
- * @deprecated use {@link iterator} instead
- */
 export var $$iterator = iterator;
 //# sourceMappingURL=iterator.js.map

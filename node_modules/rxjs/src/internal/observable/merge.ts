@@ -27,7 +27,7 @@ export function merge<T, R>(...observables: (ObservableInput<any> | SchedulerLik
  * <span class="informal">Flattens multiple Observables together by blending
  * their values into one Observable.</span>
  *
- * <img src="./img/merge.png" width="100%">
+ * ![](merge.png)
  *
  * `merge` subscribes to each given input Observable (as arguments), and simply
  * forwards (without doing any transformation) all the values from all the input
@@ -35,10 +35,12 @@ export function merge<T, R>(...observables: (ObservableInput<any> | SchedulerLik
  * once all input Observables have completed. Any error delivered by an input
  * Observable will be immediately emitted on the output Observable.
  *
- * @example <caption>Merge together two Observables: 1s interval and clicks</caption>
- * var clicks = Rx.Observable.fromEvent(document, 'click');
- * var timer = Rx.Observable.interval(1000);
- * var clicksOrTimer = Rx.Observable.merge(clicks, timer);
+ * ## Examples
+ * ### Merge together two Observables: 1s interval and clicks
+ * ```javascript
+ * const clicks = fromEvent(document, 'click');
+ * const timer = interval(1000);
+ * const clicksOrTimer = merge(clicks, timer);
  * clicksOrTimer.subscribe(x => console.log(x));
  *
  * // Results in the following:
@@ -46,13 +48,15 @@ export function merge<T, R>(...observables: (ObservableInput<any> | SchedulerLik
  * // clicks logs MouseEvents to console everytime the "document" is clicked
  * // Since the two streams are merged you see these happening
  * // as they occur.
+ * ```
  *
- * @example <caption>Merge together 3 Observables, but only 2 run concurrently</caption>
- * var timer1 = Rx.Observable.interval(1000).take(10);
- * var timer2 = Rx.Observable.interval(2000).take(6);
- * var timer3 = Rx.Observable.interval(500).take(10);
- * var concurrent = 2; // the argument
- * var merged = Rx.Observable.merge(timer1, timer2, timer3, concurrent);
+ * ### Merge together 3 Observables, but only 2 run concurrently
+ * ```javascript
+ * const timer1 = interval(1000).pipe(take(10));
+ * const timer2 = interval(2000).pipe(take(6));
+ * const timer3 = interval(500).pipe(take(10));
+ * const concurrent = 2; // the argument
+ * const merged = merge(timer1, timer2, timer3, concurrent);
  * merged.subscribe(x => console.log(x));
  *
  * // Results in the following:
@@ -63,6 +67,7 @@ export function merge<T, R>(...observables: (ObservableInput<any> | SchedulerLik
  * //   continue, and timer3 will start to run concurrently with timer2
  * // - when timer2 hits it's max iteration it terminates, and
  * //   timer3 will continue to emit a value every 500ms until it is complete
+ * ```
  *
  * @see {@link mergeAll}
  * @see {@link mergeMap}
@@ -72,7 +77,7 @@ export function merge<T, R>(...observables: (ObservableInput<any> | SchedulerLik
  * @param {...ObservableInput} observables Input Observables to merge together.
  * @param {number} [concurrent=Number.POSITIVE_INFINITY] Maximum number of input
  * Observables being subscribed to concurrently.
- * @param {Scheduler} [scheduler=null] The IScheduler to use for managing
+ * @param {SchedulerLike} [scheduler=null] The {@link SchedulerLike} to use for managing
  * concurrency of input Observables.
  * @return {Observable} an Observable that emits items that are the result of
  * every input Observable.

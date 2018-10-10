@@ -8,17 +8,20 @@ import { OperatorFunction } from '../types';
  * <span class="informal">Like {@link map}, but meant only for picking one of
  * the nested properties of every emitted object.</span>
  *
- * <img src="./img/pluck.png" width="100%">
+ * ![](pluck.png)
  *
  * Given a list of strings describing a path to an object property, retrieves
  * the value of a specified nested property from all values in the source
  * Observable. If a property can't be resolved, it will return `undefined` for
  * that value.
  *
- * @example <caption>Map every click to the tagName of the clicked target element</caption>
- * var clicks = Rx.Observable.fromEvent(document, 'click');
- * var tagNames = clicks.pluck('target', 'tagName');
+ * ## Example
+ * Map every click to the tagName of the clicked target element
+ * ```javascript
+ * const clicks = fromEvent(document, 'click');
+ * const tagNames = clicks.pipe(pluck('target', 'tagName'));
  * tagNames.subscribe(x => console.log(x));
+ * ```
  *
  * @see {@link map}
  *

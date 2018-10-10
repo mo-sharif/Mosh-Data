@@ -2,13 +2,7 @@ import { Injectable } from '@angular/core';
 import { Http , Jsonp, Response} from '@angular/http';
 import {ItemsComponent} from '../classes/items/items.component'
 import { Observable } from 'rxjs';
-import {
-  map,
-  debounceTime,
-  distinctUntilChanged,
-  switchMap,
-  tap
-} from "rxjs/operators";
+import { map } from "rxjs/operators";
 @Injectable()
 export class SearchService {
   apiRoot: string = "https://itunes.apple.com/search";

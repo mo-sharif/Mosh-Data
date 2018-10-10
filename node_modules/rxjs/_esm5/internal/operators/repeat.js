@@ -2,18 +2,6 @@
 import * as tslib_1 from "tslib";
 import { Subscriber } from '../Subscriber';
 import { empty } from '../observable/empty';
-/**
- * Returns an Observable that repeats the stream of items emitted by the source Observable at most count times.
- *
- * <img src="./img/repeat.png" width="100%">
- *
- * @param {number} [count] The number of times the source Observable items are repeated, a count of 0 will yield
- * an empty Observable.
- * @return {Observable} An Observable that repeats the stream of items emitted by the source Observable at most
- * count times.
- * @method repeat
- * @owner Observable
- */
 export function repeat(count) {
     if (count === void 0) {
         count = -1;
@@ -40,11 +28,6 @@ var RepeatOperator = /*@__PURE__*/ (function () {
     };
     return RepeatOperator;
 }());
-/**
- * We need this JSDoc comment for affecting ESDoc.
- * @ignore
- * @extends {Ignored}
- */
 var RepeatSubscriber = /*@__PURE__*/ (function (_super) {
     tslib_1.__extends(RepeatSubscriber, _super);
     function RepeatSubscriber(destination, count, source) {

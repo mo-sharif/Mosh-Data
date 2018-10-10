@@ -16,7 +16,6 @@ function fromIterable(input, scheduler) {
             var sub = new Subscription_1.Subscription();
             var iterator;
             sub.add(function () {
-                // Finalize generators
                 if (iterator && typeof iterator.return === 'function') {
                     iterator.return();
                 }

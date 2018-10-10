@@ -2,9 +2,6 @@
 import * as tslib_1 from "tslib";
 import { Subject } from './Subject';
 import { ObjectUnsubscribedError } from './util/ObjectUnsubscribedError';
-/**
- * @class BehaviorSubject<T>
- */
 var BehaviorSubject = /*@__PURE__*/ (function (_super) {
     tslib_1.__extends(BehaviorSubject, _super);
     function BehaviorSubject(_value) {
@@ -19,7 +16,6 @@ var BehaviorSubject = /*@__PURE__*/ (function (_super) {
         enumerable: true,
         configurable: true
     });
-    /** @deprecated This is an internal implementation detail, do not use. */
     BehaviorSubject.prototype._subscribe = function (subscriber) {
         var subscription = _super.prototype._subscribe.call(this, subscriber);
         if (subscription && !subscription.closed) {

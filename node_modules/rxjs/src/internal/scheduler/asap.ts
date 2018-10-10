@@ -7,7 +7,7 @@ import { AsapScheduler } from './AsapScheduler';
  *
  * <span class="informal">Perform task as fast as it can be performed asynchronously</span>
  *
- * `asap` scheduler behaves the same as {@link async} scheduler when you use it to delay task
+ * `asap` scheduler behaves the same as {@link asyncScheduler} scheduler when you use it to delay task
  * in time. If however you set delay to `0`, `asap` will wait for current synchronously executing
  * code to end and then it will try to execute given task as fast as possible.
  *
@@ -21,8 +21,9 @@ import { AsapScheduler } from './AsapScheduler';
  * that task will execute first. That being said, if you need to schedule task asynchronously, but
  * as soon as possible, `asap` scheduler is your best bet.
  *
- * @example <caption>Compare async and asap scheduler</caption>
- *
+ * ## Example
+ * Compare async and asap scheduler<
+ * ```javascript
  * Rx.Scheduler.async.schedule(() => console.log('async')); // scheduling 'async' first...
  * Rx.Scheduler.asap.schedule(() => console.log('asap'));
  *
@@ -30,7 +31,7 @@ import { AsapScheduler } from './AsapScheduler';
  * // "asap"
  * // "async"
  * // ... but 'asap' goes first!
- *
+ * ```
  * @static true
  * @name asap
  * @owner Scheduler

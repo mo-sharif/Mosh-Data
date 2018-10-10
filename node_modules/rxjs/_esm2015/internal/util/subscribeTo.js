@@ -21,6 +21,9 @@ export const subscribeTo = (result) => {
             }
         };
     }
+    else if (result && typeof result[Symbol_observable] === 'function') {
+        return subscribeToObservable(result);
+    }
     else if (isArrayLike(result)) {
         return subscribeToArray(result);
     }
@@ -29,9 +32,6 @@ export const subscribeTo = (result) => {
     }
     else if (result && typeof result[Symbol_iterator] === 'function') {
         return subscribeToIterable(result);
-    }
-    else if (result && typeof result[Symbol_observable] === 'function') {
-        return subscribeToObservable(result);
     }
     else {
         const value = isObject(result) ? 'an invalid object' : `'${result}'`;

@@ -6,9 +6,6 @@ import { Subscription } from './Subscription';
 import { ObserveOnSubscriber } from './operators/observeOn';
 import { ObjectUnsubscribedError } from './util/ObjectUnsubscribedError';
 import { SubjectSubscription } from './SubjectSubscription';
-/**
- * @class ReplaySubject<T>
- */
 var ReplaySubject = /*@__PURE__*/ (function (_super) {
     tslib_1.__extends(ReplaySubject, _super);
     function ReplaySubject(bufferSize, windowTime, scheduler) {
@@ -36,8 +33,6 @@ var ReplaySubject = /*@__PURE__*/ (function (_super) {
     ReplaySubject.prototype.nextInfiniteTimeWindow = function (value) {
         var _events = this._events;
         _events.push(value);
-        // Since this method is invoked in every next() call than the buffer
-        // can overgrow the max size only by one item
         if (_events.length > this._bufferSize) {
             _events.shift();
         }
@@ -48,9 +43,7 @@ var ReplaySubject = /*@__PURE__*/ (function (_super) {
         this._trimBufferThenGetEvents();
         _super.prototype.next.call(this, value);
     };
-    /** @deprecated This is an internal implementation detail, do not use. */
     ReplaySubject.prototype._subscribe = function (subscriber) {
-        // When `_infiniteTimeWindow === true` then the buffer is already trimmed
         var _infiniteTimeWindow = this._infiniteTimeWindow;
         var _events = _infiniteTimeWindow ? this._events : this._trimBufferThenGetEvents();
         var scheduler = this.scheduler;
@@ -97,9 +90,6 @@ var ReplaySubject = /*@__PURE__*/ (function (_super) {
         var _events = this._events;
         var eventsCount = _events.length;
         var spliceCount = 0;
-        // Trim events that fall out of the time window.
-        // Start at the front of the list. Break early once
-        // we encounter an event that falls within the window.
         while (spliceCount < eventsCount) {
             if ((now - _events[spliceCount].time) < _windowTime) {
                 break;

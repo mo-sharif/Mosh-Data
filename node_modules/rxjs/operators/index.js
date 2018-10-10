@@ -1,6 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-/* Operator exports */
 var audit_1 = require("../internal/operators/audit");
 exports.audit = audit_1.audit;
 var auditTime_1 = require("../internal/operators/auditTime");
@@ -51,6 +50,8 @@ var distinctUntilKeyChanged_1 = require("../internal/operators/distinctUntilKeyC
 exports.distinctUntilKeyChanged = distinctUntilKeyChanged_1.distinctUntilKeyChanged;
 var elementAt_1 = require("../internal/operators/elementAt");
 exports.elementAt = elementAt_1.elementAt;
+var endWith_1 = require("../internal/operators/endWith");
+exports.endWith = endWith_1.endWith;
 var every_1 = require("../internal/operators/every");
 exports.every = every_1.every;
 var exhaust_1 = require("../internal/operators/exhaust");

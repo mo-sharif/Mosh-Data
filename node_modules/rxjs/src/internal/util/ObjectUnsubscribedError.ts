@@ -1,3 +1,19 @@
+export interface ObjectUnsubscribedError extends Error {
+}
+
+export interface ObjectUnsubscribedErrorCtor {
+  new(): ObjectUnsubscribedError;
+}
+
+function ObjectUnsubscribedErrorImpl(this: any) {
+  Error.call(this);
+  this.message = 'object unsubscribed';
+  this.name = 'ObjectUnsubscribedError';
+  return this;
+}
+
+ObjectUnsubscribedErrorImpl.prototype = Object.create(Error.prototype);
+
 /**
  * An error thrown when an action is invalid because the object has been
  * unsubscribed.
@@ -7,10 +23,4 @@
  *
  * @class ObjectUnsubscribedError
  */
-export class ObjectUnsubscribedError extends Error {
-  constructor() {
-    super('object unsubscribed');
-    this.name = 'ObjectUnsubscribedError';
-    (Object as any).setPrototypeOf(this, ObjectUnsubscribedError.prototype);
-  }
-}
+export const ObjectUnsubscribedError: ObjectUnsubscribedErrorCtor = ObjectUnsubscribedErrorImpl as any;

@@ -22,7 +22,7 @@ export function concat<T, R>(...observables: (ObservableInput<any> | SchedulerLi
  * <span class="informal">Concatenates multiple Observables together by
  * sequentially emitting their values, one Observable after the other.</span>
  *
- * <img src="./img/concat.png" width="100%">
+ * ![](concat.png)
  *
  * `concat` joins multiple Observables together, by subscribing to them one at a time and
  * merging their results into the output Observable. You can pass either an array of
@@ -52,21 +52,24 @@ export function concat<T, R>(...observables: (ObservableInput<any> | SchedulerLi
  * as many times as you like. If passing the same Observable to `concat` 1000 times becomes tedious,
  * you can always use {@link repeat}.
  *
- * @example <caption>Concatenate a timer counting from 0 to 3 with a synchronous sequence from 1 to 10</caption>
- * var timer = Rx.Observable.interval(1000).take(4);
- * var sequence = Rx.Observable.range(1, 10);
- * var result = Rx.Observable.concat(timer, sequence);
+ * ## Examples
+ * ### Concatenate a timer counting from 0 to 3 with a synchronous sequence from 1 to 10
+ * ```javascript
+ * const timer = interval(1000).pipe(take(4));
+ * const sequence = range(1, 10);
+ * const result = concat(timer, sequence);
  * result.subscribe(x => console.log(x));
  *
  * // results in:
  * // 0 -1000ms-> 1 -1000ms-> 2 -1000ms-> 3 -immediate-> 1 ... 10
+ * ```
  *
- *
- * @example <caption>Concatenate an array of 3 Observables</caption>
- * var timer1 = Rx.Observable.interval(1000).take(10);
- * var timer2 = Rx.Observable.interval(2000).take(6);
- * var timer3 = Rx.Observable.interval(500).take(10);
- * var result = Rx.Observable.concat([timer1, timer2, timer3]); // note that array is passed
+ * ### Concatenate an array of 3 Observables
+ * ```javascript
+ * const timer1 = interval(1000).pipe(take(10));
+ * const timer2 = interval(2000).pipe(take(6));
+ * const timer3 = interval(500).pipe(take(10));
+ * const result = concat([timer1, timer2, timer3]); // note that array is passed
  * result.subscribe(x => console.log(x));
  *
  * // results in the following:
@@ -74,12 +77,13 @@ export function concat<T, R>(...observables: (ObservableInput<any> | SchedulerLi
  * // -1000ms-> 0 -1000ms-> 1 -1000ms-> ... 9
  * // -2000ms-> 0 -2000ms-> 1 -2000ms-> ... 5
  * // -500ms-> 0 -500ms-> 1 -500ms-> ... 9
+ * ```
  *
- *
- * @example <caption>Concatenate the same Observable to repeat it</caption>
- * const timer = Rx.Observable.interval(1000).take(2);
- *
- * Rx.Observable.concat(timer, timer) // concating the same Observable!
+ * ### Concatenate the same Observable to repeat it
+ * ```javascript
+ * const timer = interval(1000).pipe(take(2));
+ * *
+ * concat(timer, timer) // concatenating the same Observable!
  * .subscribe(
  *   value => console.log(value),
  *   err => {},
@@ -92,6 +96,7 @@ export function concat<T, R>(...observables: (ObservableInput<any> | SchedulerLi
  * // 0 after 3s
  * // 1 after 4s
  * // "...and it is done!" also after 4s
+ * ```
  *
  * @see {@link concatAll}
  * @see {@link concatMap}
@@ -100,7 +105,7 @@ export function concat<T, R>(...observables: (ObservableInput<any> | SchedulerLi
  * @param {ObservableInput} input1 An input Observable to concatenate with others.
  * @param {ObservableInput} input2 An input Observable to concatenate with others.
  * More than one input Observables may be given as argument.
- * @param {Scheduler} [scheduler=null] An optional IScheduler to schedule each
+ * @param {SchedulerLike} [scheduler=null] An optional {@link SchedulerLike} to schedule each
  * Observable subscription on.
  * @return {Observable} All values of each passed Observable merged into a
  * single Observable, in order, in serial fashion.

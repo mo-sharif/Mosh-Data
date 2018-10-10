@@ -7,11 +7,12 @@
  */
 import { ChangeDetectorRef as viewEngine_ChangeDetectorRef } from '../change_detection/change_detector_ref';
 import { InjectFlags } from '../di/injector';
+import { ComponentFactoryResolver as viewEngine_ComponentFactoryResolver } from '../linker/component_factory_resolver';
 import { ElementRef as viewEngine_ElementRef } from '../linker/element_ref';
 import { TemplateRef as viewEngine_TemplateRef } from '../linker/template_ref';
 import { ViewContainerRef as viewEngine_ViewContainerRef } from '../linker/view_container_ref';
 import { Type } from '../type';
-import { DirectiveDef } from './interfaces/definition';
+import { DirectiveDefInternal } from './interfaces/definition';
 import { LInjector } from './interfaces/injector';
 import { LContainerNode, LElementNode, LNode } from './interfaces/node';
 import { QueryReadType } from './interfaces/query';
@@ -37,13 +38,13 @@ export declare function getOrCreateNodeInjectorForNode(node: LElementNode | LCon
  * @param di The node injector in which a directive will be added
  * @param def The definition of the directive to be made public
  */
-export declare function diPublicInInjector(di: LInjector, def: DirectiveDef<any>): void;
+export declare function diPublicInInjector(di: LInjector, def: DirectiveDefInternal<any>): void;
 /**
  * Makes a directive public to the DI system by adding it to an injector's bloom filter.
  *
  * @param def The definition of the directive to be made public
  */
-export declare function diPublic(def: DirectiveDef<any>): void;
+export declare function diPublic(def: DirectiveDefInternal<any>): void;
 /**
  * Searches for an instance of the given type up the injector tree and returns
  * that instance if found.
@@ -70,7 +71,8 @@ export declare function diPublic(def: DirectiveDef<any>): void;
  * @returns The instance found
  */
 export declare function directiveInject<T>(token: Type<T>): T;
-export declare function directiveInject<T>(token: Type<T>, flags?: InjectFlags): T | null;
+export declare function directiveInject<T>(token: Type<T>, flags: InjectFlags.Optional): T | null;
+export declare function directiveInject<T>(token: Type<T>, flags: InjectFlags): T;
 /**
  * Creates an ElementRef and stores it on the injector.
  * Or, if the ElementRef already exists, retrieves the existing ElementRef.
@@ -94,6 +96,14 @@ export declare function injectTemplateRef<T>(): viewEngine_TemplateRef<T>;
 export declare function injectViewContainerRef(): viewEngine_ViewContainerRef;
 /** Returns a ChangeDetectorRef (a.k.a. a ViewRef) */
 export declare function injectChangeDetectorRef(): viewEngine_ChangeDetectorRef;
+/**
+ * Creates a ComponentFactoryResolver and stores it on the injector. Or, if the
+ * ComponentFactoryResolver
+ * already exists, retrieves the existing ComponentFactoryResolver.
+ *
+ * @returns The ComponentFactoryResolver instance to use
+ */
+export declare function injectComponentFactoryResolver(): viewEngine_ComponentFactoryResolver;
 /**
  * Inject static attribute value into directive constructor.
  *
@@ -125,7 +135,7 @@ export declare function injectChangeDetectorRef(): viewEngine_ChangeDetectorRef;
  *
  * @experimental
  */
-export declare function injectAttribute(attrName: string): string | undefined;
+export declare function injectAttribute(attrNameToInject: string): string | undefined;
 /**
  * Creates a ViewRef and stores it on the injector as ChangeDetectorRef (public alias).
  * Or, if it already exists, retrieves the existing instance.
@@ -168,9 +178,10 @@ export declare function getOrCreateInjectable<T>(di: LInjector, token: Type<T>, 
  *
  * @param injector The starting node injector to check
  * @param  bloomBit The bit to check in each injector's bloom filter
+ * @param  flags The injection flags for this injection site (e.g. Optional or SkipSelf)
  * @returns An injector that might have the directive
  */
-export declare function bloomFindPossibleInjector(startInjector: LInjector, bloomBit: number): LInjector | null;
+export declare function bloomFindPossibleInjector(startInjector: LInjector, bloomBit: number, flags: InjectFlags): LInjector | null;
 export declare class ReadFromInjectorFn<T> {
     readonly read: (injector: LInjector, node: LNode, directiveIndex?: number) => T;
     constructor(read: (injector: LInjector, node: LNode, directiveIndex?: number) => T);

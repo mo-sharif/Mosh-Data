@@ -16,7 +16,7 @@ export function scan<T, R>(accumulator: (acc: R, value: T, index: number) => R, 
  * <span class="informal">It's like {@link reduce}, but emits the current
  * accumulation whenever the source emits a value.</span>
  *
- * <img src="./img/scan.png" width="100%">
+ * ![](scan.png)
  *
  * Combines together all values emitted on the source, using an accumulator
  * function that knows how to join a new source value into the accumulation from
@@ -28,12 +28,15 @@ export function scan<T, R>(accumulator: (acc: R, value: T, index: number) => R, 
  * that value will be used as the initial value for the accumulator. If no seed
  * value is specified, the first item of the source is used as the seed.
  *
- * @example <caption>Count the number of click events</caption>
- * var clicks = Rx.Observable.fromEvent(document, 'click');
- * var ones = clicks.mapTo(1);
- * var seed = 0;
- * var count = ones.scan((acc, one) => acc + one, seed);
+ * ## Example
+ * Count the number of click events
+ * ```javascript
+ * const clicks = fromEvent(document, 'click');
+ * const ones = clicks.pipe(mapTo(1));
+ * const seed = 0;
+ * const count = ones.pipe(scan((acc, one) => acc + one, seed));
  * count.subscribe(x => console.log(x));
+ * ```
  *
  * @see {@link expand}
  * @see {@link mergeScan}

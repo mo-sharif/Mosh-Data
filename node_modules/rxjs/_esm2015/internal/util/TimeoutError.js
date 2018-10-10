@@ -1,14 +1,9 @@
-/**
- * An error thrown when duetime elapses.
- *
- * @see {@link timeout}
- *
- * @class TimeoutError
- */
-export class TimeoutError extends Error {
-    constructor() {
-        super('Timeout has occurred');
-        Object.setPrototypeOf(this, TimeoutError.prototype);
-    }
+function TimeoutErrorImpl() {
+    Error.call(this);
+    this.message = 'Timeout has occurred';
+    this.name = 'TimeoutError';
+    return this;
 }
+TimeoutErrorImpl.prototype = Object.create(Error.prototype);
+export const TimeoutError = TimeoutErrorImpl;
 //# sourceMappingURL=TimeoutError.js.map

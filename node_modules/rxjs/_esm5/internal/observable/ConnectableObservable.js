@@ -5,9 +5,6 @@ import { Observable } from '../Observable';
 import { Subscriber } from '../Subscriber';
 import { Subscription } from '../Subscription';
 import { refCount as higherOrderRefCount } from '../operators/refCount';
-/**
- * @class ConnectableObservable<T>
- */
 var ConnectableObservable = /*@__PURE__*/ (function (_super) {
     tslib_1.__extends(ConnectableObservable, _super);
     function ConnectableObservable(source, subjectFactory) {
@@ -15,11 +12,9 @@ var ConnectableObservable = /*@__PURE__*/ (function (_super) {
         _this.source = source;
         _this.subjectFactory = subjectFactory;
         _this._refCount = 0;
-        /** @internal */
         _this._isComplete = false;
         return _this;
     }
-    /** @deprecated This is an internal implementation detail, do not use. */
     ConnectableObservable.prototype._subscribe = function (subscriber) {
         return this.getSubject().subscribe(subscriber);
     };
@@ -136,29 +131,6 @@ var RefCountSubscriber = /*@__PURE__*/ (function (_super) {
             this.connection = null;
             return;
         }
-        ///
-        // Compare the local RefCountSubscriber's connection Subscription to the
-        // connection Subscription on the shared ConnectableObservable. In cases
-        // where the ConnectableObservable source synchronously emits values, and
-        // the RefCountSubscriber's downstream Observers synchronously unsubscribe,
-        // execution continues to here before the RefCountOperator has a chance to
-        // supply the RefCountSubscriber with the shared connection Subscription.
-        // For example:
-        // ```
-        // Observable.range(0, 10)
-        //   .publish()
-        //   .refCount()
-        //   .take(5)
-        //   .subscribe();
-        // ```
-        // In order to account for this case, RefCountSubscriber should only dispose
-        // the ConnectableObservable's shared connection Subscription if the
-        // connection Subscription exists, *and* either:
-        //   a. RefCountSubscriber doesn't have a reference to the shared connection
-        //      Subscription yet, or,
-        //   b. RefCountSubscriber's connection Subscription reference is identical
-        //      to the shared connection Subscription
-        ///
         var connection = this.connection;
         var sharedConnection = connectable._connection;
         this.connection = null;

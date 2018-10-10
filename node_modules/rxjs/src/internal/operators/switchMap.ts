@@ -22,9 +22,9 @@ export function switchMap<T, I, R>(project: (value: T, index: number) => Observa
  * Observable, emitting values only from the most recently projected Observable.
  *
  * <span class="informal">Maps each value to an Observable, then flattens all of
- * these inner Observables using {@link switch}.</span>
+ * these inner Observables.</span>
  *
- * <img src="./img/switchMap.png" width="100%">
+ * ![](switchMap.png)
  *
  * Returns an Observable that emits items based on applying a function that you
  * supply to each item emitted by the source Observable, where that function
@@ -35,23 +35,26 @@ export function switchMap<T, I, R>(project: (value: T, index: number) => Observa
  * emitting items from the new one. It continues to behave like this for
  * subsequent inner Observables.
  *
- * @example <caption>Rerun an interval Observable on every click event</caption>
- * var clicks = Rx.Observable.fromEvent(document, 'click');
- * var result = clicks.switchMap((ev) => Rx.Observable.interval(1000));
+ * ## Example
+ * Rerun an interval Observable on every click event
+ * ```javascript
+ * const clicks = fromEvent(document, 'click');
+ * const result = clicks.pipe(switchMap((ev) => interval(1000)));
  * result.subscribe(x => console.log(x));
+ * ```
  *
  * @see {@link concatMap}
  * @see {@link exhaustMap}
  * @see {@link mergeMap}
- * @see {@link switch}
+ * @see {@link switchAll}
  * @see {@link switchMapTo}
  *
  * @param {function(value: T, ?index: number): ObservableInput} project A function
  * that, when applied to an item emitted by the source Observable, returns an
  * Observable.
  * @return {Observable} An Observable that emits the result of applying the
- * projection function (and the optional `resultSelector`) to each item emitted
- * by the source Observable and taking only the values from the most recently
+ * projection function (and the optional deprecated `resultSelector`) to each item
+ * emitted by the source Observable and taking only the values from the most recently
  * projected inner Observable.
  * @method switchMap
  * @owner Observable
@@ -110,7 +113,10 @@ class SwitchMapSubscriber<T, R> extends OuterSubscriber<T, R> {
     if (innerSubscription) {
       innerSubscription.unsubscribe();
     }
-    this.add(this.innerSubscription = subscribeToResult(this, result, value, index));
+    const innerSubscriber = new InnerSubscriber(this, undefined, undefined);
+    const destination = this.destination as Subscription;
+    destination.add(innerSubscriber);
+    this.innerSubscription = subscribeToResult(this, result, value, index, innerSubscriber);
   }
 
   protected _complete(): void {
@@ -118,6 +124,7 @@ class SwitchMapSubscriber<T, R> extends OuterSubscriber<T, R> {
     if (!innerSubscription || innerSubscription.closed) {
       super._complete();
     }
+    this.unsubscribe();
   }
 
   protected _unsubscribe() {
@@ -125,7 +132,8 @@ class SwitchMapSubscriber<T, R> extends OuterSubscriber<T, R> {
   }
 
   notifyComplete(innerSub: Subscription): void {
-    this.remove(innerSub);
+    const destination = this.destination as Subscription;
+    destination.remove(innerSub);
     this.innerSubscription = null;
     if (this.isStopped) {
       super._complete();

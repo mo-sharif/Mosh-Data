@@ -1,24 +1,10 @@
-/** PURE_IMPORTS_START tslib PURE_IMPORTS_END */
-import * as tslib_1 from "tslib";
-/**
- * An error thrown when an Observable or a sequence was queried but has no
- * elements.
- *
- * @see {@link first}
- * @see {@link last}
- * @see {@link single}
- *
- * @class EmptyError
- */
-var EmptyError = /*@__PURE__*/ (function (_super) {
-    tslib_1.__extends(EmptyError, _super);
-    function EmptyError() {
-        var _this = _super.call(this, 'no elements in sequence') || this;
-        _this.name = 'EmptyError';
-        Object.setPrototypeOf(_this, EmptyError.prototype);
-        return _this;
-    }
-    return EmptyError;
-}(Error));
-export { EmptyError };
+/** PURE_IMPORTS_START  PURE_IMPORTS_END */
+function EmptyErrorImpl() {
+    Error.call(this);
+    this.message = 'no elements in sequence';
+    this.name = 'EmptyError';
+    return this;
+}
+EmptyErrorImpl.prototype = /*@__PURE__*/ Object.create(Error.prototype);
+export var EmptyError = EmptyErrorImpl;
 //# sourceMappingURL=EmptyError.js.map

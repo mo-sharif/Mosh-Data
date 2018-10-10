@@ -1,8 +1,11 @@
 "use strict";
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    }
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -16,10 +19,7 @@ var Subscription_1 = require("./Subscription");
 var observeOn_1 = require("./operators/observeOn");
 var ObjectUnsubscribedError_1 = require("./util/ObjectUnsubscribedError");
 var SubjectSubscription_1 = require("./SubjectSubscription");
-/**
- * @class ReplaySubject<T>
- */
-var ReplaySubject = /** @class */ (function (_super) {
+var ReplaySubject = (function (_super) {
     __extends(ReplaySubject, _super);
     function ReplaySubject(bufferSize, windowTime, scheduler) {
         if (bufferSize === void 0) { bufferSize = Number.POSITIVE_INFINITY; }
@@ -42,8 +42,6 @@ var ReplaySubject = /** @class */ (function (_super) {
     ReplaySubject.prototype.nextInfiniteTimeWindow = function (value) {
         var _events = this._events;
         _events.push(value);
-        // Since this method is invoked in every next() call than the buffer
-        // can overgrow the max size only by one item
         if (_events.length > this._bufferSize) {
             _events.shift();
         }
@@ -54,9 +52,7 @@ var ReplaySubject = /** @class */ (function (_super) {
         this._trimBufferThenGetEvents();
         _super.prototype.next.call(this, value);
     };
-    /** @deprecated This is an internal implementation detail, do not use. */
     ReplaySubject.prototype._subscribe = function (subscriber) {
-        // When `_infiniteTimeWindow === true` then the buffer is already trimmed
         var _infiniteTimeWindow = this._infiniteTimeWindow;
         var _events = _infiniteTimeWindow ? this._events : this._trimBufferThenGetEvents();
         var scheduler = this.scheduler;
@@ -103,9 +99,6 @@ var ReplaySubject = /** @class */ (function (_super) {
         var _events = this._events;
         var eventsCount = _events.length;
         var spliceCount = 0;
-        // Trim events that fall out of the time window.
-        // Start at the front of the list. Break early once
-        // we encounter an event that falls within the window.
         while (spliceCount < eventsCount) {
             if ((now - _events[spliceCount].time) < _windowTime) {
                 break;
@@ -123,7 +116,7 @@ var ReplaySubject = /** @class */ (function (_super) {
     return ReplaySubject;
 }(Subject_1.Subject));
 exports.ReplaySubject = ReplaySubject;
-var ReplayEvent = /** @class */ (function () {
+var ReplayEvent = (function () {
     function ReplayEvent(time, value) {
         this.time = time;
         this.value = value;

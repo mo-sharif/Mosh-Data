@@ -1,7 +1,10 @@
 import { Operator } from '../Operator';
 import { Observable } from '../Observable';
 import { Subscriber } from '../Subscriber';
-import { MonoTypeOperatorFunction, TeardownLogic } from '../types';
+import { OperatorFunction, MonoTypeOperatorFunction, TeardownLogic } from '../types';
+
+export function takeWhile<T, S extends T>(predicate: (value: T, index: number) => value is S): OperatorFunction<T, S>;
+export function takeWhile<T>(predicate: (value: T, index: number) => boolean): MonoTypeOperatorFunction<T>;
 
 /**
  * Emits values emitted by the source Observable so long as each value satisfies
@@ -11,7 +14,7 @@ import { MonoTypeOperatorFunction, TeardownLogic } from '../types';
  * <span class="informal">Takes values from the source only while they pass the
  * condition given. When the first value does not satisfy, it completes.</span>
  *
- * <img src="./img/takeWhile.png" width="100%">
+ * ![](takeWhile.png)
  *
  * `takeWhile` subscribes and begins mirroring the source Observable. Each value
  * emitted on the source is given to the `predicate` function which returns a
@@ -20,10 +23,13 @@ import { MonoTypeOperatorFunction, TeardownLogic } from '../types';
  * returns false, at which point `takeWhile` stops mirroring the source
  * Observable and completes the output Observable.
  *
- * @example <caption>Emit click events only while the clientX property is greater than 200</caption>
- * var clicks = Rx.Observable.fromEvent(document, 'click');
- * var result = clicks.takeWhile(ev => ev.clientX > 200);
+ * ## Example
+ * Emit click events only while the clientX property is greater than 200
+ * ```javascript
+ * const clicks = fromEvent(document, 'click');
+ * const result = clicks.pipe(takeWhile(ev => ev.clientX > 200));
  * result.subscribe(x => console.log(x));
+ * ```
  *
  * @see {@link take}
  * @see {@link takeLast}

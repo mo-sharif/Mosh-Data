@@ -2,37 +2,7 @@ import { tryCatch } from '../util/tryCatch';
 import { errorObject } from '../util/errorObject';
 import { subscribeToResult } from '../util/subscribeToResult';
 import { OuterSubscriber } from '../OuterSubscriber';
-/**
- * Applies an accumulator function over the source Observable where the
- * accumulator function itself returns an Observable, then each intermediate
- * Observable returned is merged into the output Observable.
- *
- * <span class="informal">It's like {@link scan}, but the Observables returned
- * by the accumulator are merged into the outer Observable.</span>
- *
- * @example <caption>Count the number of click events</caption>
- * const click$ = Rx.Observable.fromEvent(document, 'click');
- * const one$ = click$.mapTo(1);
- * const seed = 0;
- * const count$ = one$.mergeScan((acc, one) => Rx.Observable.of(acc + one), seed);
- * count$.subscribe(x => console.log(x));
- *
- * // Results:
- * 1
- * 2
- * 3
- * 4
- * // ...and so on for each click
- *
- * @param {function(acc: R, value: T): Observable<R>} accumulator
- * The accumulator function called on each source value.
- * @param seed The initial accumulation value.
- * @param {number} [concurrent=Number.POSITIVE_INFINITY] Maximum number of
- * input Observables being subscribed to concurrently.
- * @return {Observable<R>} An observable of the accumulated values.
- * @method mergeScan
- * @owner Observable
- */
+import { InnerSubscriber } from '../InnerSubscriber';
 export function mergeScan(accumulator, seed, concurrent = Number.POSITIVE_INFINITY) {
     return (source) => source.lift(new MergeScanOperator(accumulator, seed, concurrent));
 }
@@ -46,11 +16,6 @@ export class MergeScanOperator {
         return source.subscribe(new MergeScanSubscriber(subscriber, this.accumulator, this.seed, this.concurrent));
     }
 }
-/**
- * We need this JSDoc comment for affecting ESDoc.
- * @ignore
- * @extends {Ignored}
- */
 export class MergeScanSubscriber extends OuterSubscriber {
     constructor(destination, accumulator, acc, concurrent) {
         super(destination);
@@ -81,7 +46,10 @@ export class MergeScanSubscriber extends OuterSubscriber {
         }
     }
     _innerSub(ish, value, index) {
-        this.add(subscribeToResult(this, ish, value, index));
+        const innerSubscriber = new InnerSubscriber(this, undefined, undefined);
+        const destination = this.destination;
+        destination.add(innerSubscriber);
+        subscribeToResult(this, ish, value, index, innerSubscriber);
     }
     _complete() {
         this.hasCompleted = true;
@@ -91,6 +59,7 @@ export class MergeScanSubscriber extends OuterSubscriber {
             }
             this.destination.complete();
         }
+        this.unsubscribe();
     }
     notifyNext(outerValue, innerValue, outerIndex, innerIndex, innerSub) {
         const { destination } = this;
@@ -100,7 +69,8 @@ export class MergeScanSubscriber extends OuterSubscriber {
     }
     notifyComplete(innerSub) {
         const buffer = this.buffer;
-        this.remove(innerSub);
+        const destination = this.destination;
+        destination.remove(innerSub);
         this.active--;
         if (buffer.length > 0) {
             this._next(buffer.shift());

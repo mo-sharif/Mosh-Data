@@ -24,17 +24,19 @@ export function mergeMap<T, I, R>(project: (value: T, index: number) => Observab
  * <span class="informal">Maps each value to an Observable, then flattens all of
  * these inner Observables using {@link mergeAll}.</span>
  *
- * <img src="./img/mergeMap.png" width="100%">
+ * ![](mergeMap.png)
  *
  * Returns an Observable that emits items based on applying a function that you
  * supply to each item emitted by the source Observable, where that function
  * returns an Observable, and then merging those resulting Observables and
  * emitting the results of this merger.
  *
- * @example <caption>Map and flatten each letter to an Observable ticking every 1 second</caption>
- * var letters = Rx.Observable.of('a', 'b', 'c');
- * var result = letters.mergeMap(x =>
- *   Rx.Observable.interval(1000).map(i => x+i)
+ * ## Example
+ * Map and flatten each letter to an Observable ticking every 1 second
+ * ```javascript
+ * const letters = of('a', 'b', 'c');
+ * const result = letters.pipe(
+ *   mergeMap(x => interval(1000).pipe(map(i => x+i))),
  * );
  * result.subscribe(x => console.log(x));
  *
@@ -46,6 +48,7 @@ export function mergeMap<T, I, R>(project: (value: T, index: number) => Observab
  * // b1
  * // c1
  * // continues to list a,b,c with respective ascending integers
+ * ```
  *
  * @see {@link concatMap}
  * @see {@link exhaustMap}
@@ -61,9 +64,9 @@ export function mergeMap<T, I, R>(project: (value: T, index: number) => Observab
  * @param {number} [concurrent=Number.POSITIVE_INFINITY] Maximum number of input
  * Observables being subscribed to concurrently.
  * @return {Observable} An Observable that emits the result of applying the
- * projection function (and the optional `resultSelector`) to each item emitted
- * by the source Observable and merging the results of the Observables obtained
- * from this transformation.
+ * projection function (and the optional deprecated `resultSelector`) to each item
+ * emitted by the source Observable and merging the results of the Observables
+ * obtained from this transformation.
  * @method mergeMap
  * @owner Observable
  */
@@ -136,7 +139,10 @@ export class MergeMapSubscriber<T, R> extends OuterSubscriber<T, R> {
   }
 
   private _innerSub(ish: ObservableInput<R>, value: T, index: number): void {
-    this.add(subscribeToResult<T, R>(this, ish, value, index));
+    const innerSubscriber = new InnerSubscriber(this, undefined, undefined);
+    const destination = this.destination as Subscription;
+    destination.add(innerSubscriber);
+    subscribeToResult<T, R>(this, ish, value, index, innerSubscriber);
   }
 
   protected _complete(): void {
@@ -144,6 +150,7 @@ export class MergeMapSubscriber<T, R> extends OuterSubscriber<T, R> {
     if (this.active === 0 && this.buffer.length === 0) {
       this.destination.complete();
     }
+    this.unsubscribe();
   }
 
   notifyNext(outerValue: T, innerValue: R,

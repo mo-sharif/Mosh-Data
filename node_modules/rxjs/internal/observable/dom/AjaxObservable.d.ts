@@ -42,9 +42,11 @@ export declare class AjaxObservable<T> extends Observable<T> {
      * Creates an observable for an Ajax request with either a request object with
      * url, headers, etc or a string for a URL.
      *
-     * @example
+     * ## Example
+     * ```javascript
      * source = Rx.Observable.ajax('/products');
      * source = Rx.Observable.ajax({ url: 'products', method: 'GET' });
+     * ```
      *
      * @param {string|Object} request Can be one of the following:
      *   A string of the URL to make the Ajax call.
@@ -82,10 +84,10 @@ export declare class AjaxSubscriber<T> extends Subscriber<Event> {
     private done;
     constructor(destination: Subscriber<T>, request: AjaxRequest);
     next(e: Event): void;
-    private send();
-    private serializeBody(body, contentType?);
-    private setHeaders(xhr, headers);
-    private setupEvents(xhr, request);
+    private send;
+    private serializeBody;
+    private setHeaders;
+    private setupEvents;
     unsubscribe(): void;
 }
 /**
@@ -109,6 +111,7 @@ export declare class AjaxResponse {
     responseType: string;
     constructor(originalEvent: Event, xhr: XMLHttpRequest, request: AjaxRequest);
 }
+export declare type AjaxErrorNames = 'AjaxError' | 'AjaxTimeoutError';
 /**
  * A normalized AJAX error.
  *
@@ -116,7 +119,7 @@ export declare class AjaxResponse {
  *
  * @class AjaxError
  */
-export declare class AjaxError extends Error {
+export interface AjaxError extends Error {
     /** @type {XMLHttpRequest} The XHR instance associated with the error */
     xhr: XMLHttpRequest;
     /** @type {AjaxRequest} The AjaxRequest associated with the error */
@@ -127,13 +130,19 @@ export declare class AjaxError extends Error {
     responseType: string;
     /** @type {string|ArrayBuffer|Document|object|any} The response data */
     response: any;
-    constructor(message: string, xhr: XMLHttpRequest, request: AjaxRequest);
+}
+export interface AjaxErrorCtor {
+    new (message: string, xhr: XMLHttpRequest, request: AjaxRequest): AjaxError;
+}
+export declare const AjaxError: AjaxErrorCtor;
+export interface AjaxTimeoutError extends AjaxError {
+}
+export interface AjaxTimeoutErrorCtor {
+    new (xhr: XMLHttpRequest, request: AjaxRequest): AjaxTimeoutError;
 }
 /**
  * @see {@link ajax}
  *
  * @class AjaxTimeoutError
  */
-export declare class AjaxTimeoutError extends AjaxError {
-    constructor(xhr: XMLHttpRequest, request: AjaxRequest);
-}
+export declare const AjaxTimeoutError: AjaxTimeoutErrorCtor;

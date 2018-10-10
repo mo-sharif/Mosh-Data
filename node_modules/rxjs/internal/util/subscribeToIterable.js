@@ -14,7 +14,6 @@ exports.subscribeToIterable = function (iterable) { return function (subscriber)
             break;
         }
     } while (true);
-    // Finalize the iterator if it happens to be a Generator
     if (typeof iterator.return === 'function') {
         subscriber.add(function () {
             if (iterator.return) {

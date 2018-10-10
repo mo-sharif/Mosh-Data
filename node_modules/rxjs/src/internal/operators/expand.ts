@@ -22,7 +22,7 @@ export function expand<T>(project: (value: T, index: number) => ObservableInput<
  * projection function to every source value as well as every output value.
  * It's recursive.</span>
  *
- * <img src="./img/expand.png" width="100%">
+ * ![](expand.png)
  *
  * Returns an Observable that emits items based on applying a function that you
  * supply to each item emitted by the source Observable, where that function
@@ -34,13 +34,17 @@ export function expand<T>(project: (value: T, index: number) => ObservableInput<
  * given to the `project` function to produce new output values. This is how
  * *expand* behaves recursively.
  *
- * @example <caption>Start emitting the powers of two on every click, at most 10 of them</caption>
- * var clicks = Rx.Observable.fromEvent(document, 'click');
- * var powersOfTwo = clicks
- *   .mapTo(1)
- *   .expand(x => Rx.Observable.of(2 * x).delay(1000))
- *   .take(10);
+ * ## Example
+ * Start emitting the powers of two on every click, at most 10 of them
+ * ```javascript
+ * const clicks = fromEvent(document, 'click');
+ * const powersOfTwo = clicks.pipe(
+ *   mapTo(1),
+ *   expand(x => of(2 * x).pipe(delay(1000))),
+ *   take(10),
+ * );
  * powersOfTwo.subscribe(x => console.log(x));
+ * ```
  *
  * @see {@link mergeMap}
  * @see {@link mergeScan}
@@ -50,7 +54,7 @@ export function expand<T>(project: (value: T, index: number) => ObservableInput<
  * returns an Observable.
  * @param {number} [concurrent=Number.POSITIVE_INFINITY] Maximum number of input
  * Observables being subscribed to concurrently.
- * @param {Scheduler} [scheduler=null] The IScheduler to use for subscribing to
+ * @param {SchedulerLike} [scheduler=null] The {@link SchedulerLike} to use for subscribing to
  * each projected inner Observable.
  * @return {Observable} An Observable that emits the source values and also
  * result of applying the projection function to each value emitted on the
@@ -129,7 +133,8 @@ export class ExpandSubscriber<T, R> extends OuterSubscriber<T, R> {
         this.subscribeToProjection(result, value, index);
       } else {
         const state: DispatchArg<T, R> = { subscriber: this, result, value, index };
-        this.add(this.scheduler.schedule<DispatchArg<T, R>>(ExpandSubscriber.dispatch, 0, state));
+        const destination = this.destination as Subscription;
+        destination.add(this.scheduler.schedule<DispatchArg<T, R>>(ExpandSubscriber.dispatch, 0, state));
       }
     } else {
       this.buffer.push(value);
@@ -138,7 +143,8 @@ export class ExpandSubscriber<T, R> extends OuterSubscriber<T, R> {
 
   private subscribeToProjection(result: any, value: T, index: number): void {
     this.active++;
-    this.add(subscribeToResult<T, R>(this, result, value, index));
+    const destination = this.destination as Subscription;
+    destination.add(subscribeToResult<T, R>(this, result, value, index));
   }
 
   protected _complete(): void {
@@ -146,6 +152,7 @@ export class ExpandSubscriber<T, R> extends OuterSubscriber<T, R> {
     if (this.hasCompleted && this.active === 0) {
       this.destination.complete();
     }
+    this.unsubscribe();
   }
 
   notifyNext(outerValue: T, innerValue: R,
@@ -156,7 +163,8 @@ export class ExpandSubscriber<T, R> extends OuterSubscriber<T, R> {
 
   notifyComplete(innerSub: Subscription): void {
     const buffer = this.buffer;
-    this.remove(innerSub);
+    const destination = this.destination as Subscription;
+    destination.remove(innerSub);
     this.active--;
     if (buffer && buffer.length > 0) {
       this._next(buffer.shift());

@@ -18,7 +18,7 @@ import { OperatorFunction } from '../types';
  * <span class="informal">It's like {@link bufferToggle}, but emits a nested
  * Observable instead of an array.</span>
  *
- * <img src="./img/windowToggle.png" width="100%">
+ * ![](windowToggle.png)
  *
  * Returns an Observable that emits windows of items it collects from the source
  * Observable. The output Observable emits windows that contain those items
@@ -26,13 +26,17 @@ import { OperatorFunction } from '../types';
  * Observable emits an item and when the Observable returned by
  * `closingSelector` emits an item.
  *
- * @example <caption>Every other second, emit the click events from the next 500ms</caption>
- * var clicks = Rx.Observable.fromEvent(document, 'click');
- * var openings = Rx.Observable.interval(1000);
- * var result = clicks.windowToggle(openings, i =>
- *   i % 2 ? Rx.Observable.interval(500) : Rx.Observable.empty()
- * ).mergeAll();
+ * ## Example
+ * Every other second, emit the click events from the next 500ms
+ * ```javascript
+ * const clicks = fromEvent(document, 'click');
+ * const openings = interval(1000);
+ * const result = clicks.pipe(
+ *   windowToggle(openings, i => i % 2 ? interval(500) : empty()),
+ *   mergeAll(),
+ * );
  * result.subscribe(x => console.log(x));
+ * ```
  *
  * @see {@link window}
  * @see {@link windowCount}

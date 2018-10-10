@@ -17,7 +17,7 @@ export function concatMap<T, I, R>(project: (value: T, index: number) =>  Observ
  * <span class="informal">Maps each value to an Observable, then flattens all of
  * these inner Observables using {@link concatAll}.</span>
  *
- * <img src="./img/concatMap.png" width="100%">
+ * ![](concatMap.png)
  *
  * Returns an Observable that emits items based on applying a function that you
  * supply to each item emitted by the source Observable, where that function
@@ -32,9 +32,14 @@ export function concatMap<T, I, R>(project: (value: T, index: number) =>  Observ
  * Note: `concatMap` is equivalent to `mergeMap` with concurrency parameter set
  * to `1`.
  *
- * @example <caption>For each click event, tick every second from 0 to 3, with no concurrency</caption>
- * var clicks = Rx.Observable.fromEvent(document, 'click');
- * var result = clicks.concatMap(ev => Rx.Observable.interval(1000).take(4));
+ * ## Example
+ * For each click event, tick every second from 0 to 3, with no concurrency
+ *
+ * ```javascript
+ * const clicks = fromEvent(document, 'click');
+ * const result = clicks.pipe(
+ *   concatMap(ev => interval(1000).pipe(take(4)),
+ * );
  * result.subscribe(x => console.log(x));
  *
  * // Results in the following:
@@ -42,6 +47,7 @@ export function concatMap<T, I, R>(project: (value: T, index: number) =>  Observ
  * // For every click on the "document" it will emit values 0 to 3 spaced
  * // on a 1000ms interval
  * // one click = 1000ms-> 0 -1000ms-> 1 -1000ms-> 2 -1000ms-> 3
+ * ```
  *
  * @see {@link concat}
  * @see {@link concatAll}
@@ -54,7 +60,7 @@ export function concatMap<T, I, R>(project: (value: T, index: number) =>  Observ
  * that, when applied to an item emitted by the source Observable, returns an
  * Observable.
  * @return {Observable} An Observable that emits the result of applying the
- * projection function (and the optional `resultSelector`) to each item emitted
+ * projection function (and the optional deprecated `resultSelector`) to each item emitted
  * by the source Observable and taking values from each projected inner
  * Observable sequentially.
  * @method concatMap

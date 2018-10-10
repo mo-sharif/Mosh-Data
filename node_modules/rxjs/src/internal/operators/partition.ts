@@ -11,7 +11,7 @@ import { UnaryFunction } from '../types';
  * one like the output of {@link filter}, and the other with values that did not
  * pass the condition.</span>
  *
- * <img src="./img/partition.png" width="100%">
+ * ![](partition.png)
  *
  * `partition` outputs an array with two Observables that partition the values
  * from the source Observable through the given `predicate` function. The first
@@ -20,13 +20,16 @@ import { UnaryFunction } from '../types';
  * predicate returns false. The first behaves like {@link filter} and the second
  * behaves like {@link filter} with the predicate negated.
  *
- * @example <caption>Partition click events into those on DIV elements and those elsewhere</caption>
- * var clicks = Rx.Observable.fromEvent(document, 'click');
- * var parts = clicks.partition(ev => ev.target.tagName === 'DIV');
- * var clicksOnDivs = parts[0];
- * var clicksElsewhere = parts[1];
+ * ## Example
+ * Partition click events into those on DIV elements and those elsewhere
+ * ```javascript
+ * const clicks = fromEvent(document, 'click');
+ * const parts = clicks.pipe(partition(ev => ev.target.tagName === 'DIV'));
+ * const clicksOnDivs = parts[0];
+ * const clicksElsewhere = parts[1];
  * clicksOnDivs.subscribe(x => console.log('DIV clicked: ', x));
  * clicksElsewhere.subscribe(x => console.log('Other clicked: ', x));
+ * ```
  *
  * @see {@link filter}
  *

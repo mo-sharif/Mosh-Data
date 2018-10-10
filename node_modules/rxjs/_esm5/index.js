@@ -1,38 +1,30 @@
-/* Observable */
 /** PURE_IMPORTS_START  PURE_IMPORTS_END */
 export { Observable } from './internal/Observable';
 export { ConnectableObservable } from './internal/observable/ConnectableObservable';
 export { GroupedObservable } from './internal/operators/groupBy';
 export { observable } from './internal/symbol/observable';
-/* Subjects */
 export { Subject } from './internal/Subject';
 export { BehaviorSubject } from './internal/BehaviorSubject';
 export { ReplaySubject } from './internal/ReplaySubject';
 export { AsyncSubject } from './internal/AsyncSubject';
-/* Schedulers */
 export { asap as asapScheduler } from './internal/scheduler/asap';
 export { async as asyncScheduler } from './internal/scheduler/async';
 export { queue as queueScheduler } from './internal/scheduler/queue';
 export { animationFrame as animationFrameScheduler } from './internal/scheduler/animationFrame';
 export { VirtualTimeScheduler, VirtualAction } from './internal/scheduler/VirtualTimeScheduler';
 export { Scheduler } from './internal/Scheduler';
-/* Subscription */
 export { Subscription } from './internal/Subscription';
 export { Subscriber } from './internal/Subscriber';
-/* Notification */
 export { Notification } from './internal/Notification';
-/* Utils */
 export { pipe } from './internal/util/pipe';
 export { noop } from './internal/util/noop';
 export { identity } from './internal/util/identity';
 export { isObservable } from './internal/util/isObservable';
-/* Error types */
 export { ArgumentOutOfRangeError } from './internal/util/ArgumentOutOfRangeError';
 export { EmptyError } from './internal/util/EmptyError';
 export { ObjectUnsubscribedError } from './internal/util/ObjectUnsubscribedError';
 export { UnsubscriptionError } from './internal/util/UnsubscriptionError';
 export { TimeoutError } from './internal/util/TimeoutError';
-/* Static observable creation exports */
 export { bindCallback } from './internal/observable/bindCallback';
 export { bindNodeCallback } from './internal/observable/bindNodeCallback';
 export { combineLatest } from './internal/observable/combineLatest';
@@ -57,9 +49,7 @@ export { throwError } from './internal/observable/throwError';
 export { timer } from './internal/observable/timer';
 export { using } from './internal/observable/using';
 export { zip } from './internal/observable/zip';
-/* Constants */
 export { EMPTY } from './internal/observable/empty';
 export { NEVER } from './internal/observable/never';
-/* Config */
 export { config } from './internal/config';
 //# sourceMappingURL=index.js.map

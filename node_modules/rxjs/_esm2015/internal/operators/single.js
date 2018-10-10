@@ -1,22 +1,5 @@
 import { Subscriber } from '../Subscriber';
 import { EmptyError } from '../util/EmptyError';
-/**
- * Returns an Observable that emits the single item emitted by the source Observable that matches a specified
- * predicate, if that Observable emits one such item. If the source Observable emits more than one such item or no
- * items, notify of an IllegalArgumentException or NoSuchElementException respectively. If the source Observable
- * emits items but none match the specified predicate then `undefined` is emiited.
- *
- * <img src="./img/single.png" width="100%">
- *
- * @throws {EmptyError} Delivers an EmptyError to the Observer's `error`
- * callback if the Observable completes before any `next` notification was sent.
- * @param {Function} predicate - A predicate function to evaluate items emitted by the source Observable.
- * @return {Observable<T>} An Observable that emits the single item emitted by the source Observable that matches
- * the predicate or `undefined` when no items match.
- *
- * @method single
- * @owner Observable
- */
 export function single(predicate) {
     return (source) => source.lift(new SingleOperator(predicate, source));
 }
@@ -29,11 +12,6 @@ class SingleOperator {
         return source.subscribe(new SingleSubscriber(subscriber, this.predicate, this.source));
     }
 }
-/**
- * We need this JSDoc comment for affecting ESDoc.
- * @ignore
- * @extends {Ignored}
- */
 class SingleSubscriber extends Subscriber {
     constructor(destination, predicate, source) {
         super(destination);

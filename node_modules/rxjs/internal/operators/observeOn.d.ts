@@ -28,15 +28,18 @@ import { MonoTypeOperatorFunction, PartialObserver, SchedulerAction, SchedulerLi
  * for any kind of delaying of values in the stream, while using `observeOn` to specify which scheduler should be used
  * for notification emissions in general.
  *
- * @example <caption>Ensure values in subscribe are called just before browser repaint.</caption>
- * const intervals = Rx.Observable.interval(10); // Intervals are scheduled
- *                                               // with async scheduler by default...
- *
- * intervals
- * .observeOn(Rx.Scheduler.animationFrame)       // ...but we will observe on animationFrame
- * .subscribe(val => {                           // scheduler to ensure smooth animation.
+ * ## Example
+ * Ensure values in subscribe are called just before browser repaint.
+ * ```javascript
+ * const intervals = interval(10);                // Intervals are scheduled
+ *                                                // with async scheduler by default...
+ * intervals.pipe(
+ *   observeOn(animationFrameScheduler),          // ...but we will observe on animationFrame
+ * )                                              // scheduler to ensure smooth animation.
+ * .subscribe(val => {
  *   someDiv.style.height = val + 'px';
  * });
+ * ```
  *
  * @see {@link delay}
  *
@@ -66,7 +69,7 @@ export declare class ObserveOnSubscriber<T> extends Subscriber<T> {
     /** @nocollapse */
     static dispatch(this: SchedulerAction<ObserveOnMessage>, arg: ObserveOnMessage): void;
     constructor(destination: Subscriber<T>, scheduler: SchedulerLike, delay?: number);
-    private scheduleMessage(notification);
+    private scheduleMessage;
     protected _next(value: T): void;
     protected _error(err: any): void;
     protected _complete(): void;

@@ -17,11 +17,15 @@ import { ObservableInput, OperatorFunction } from '../types';
  * <span class="informal">It's like {@link scan}, but the Observables returned
  * by the accumulator are merged into the outer Observable.</span>
  *
- * @example <caption>Count the number of click events</caption>
- * const click$ = Rx.Observable.fromEvent(document, 'click');
- * const one$ = click$.mapTo(1);
+ * ## Example
+ * Count the number of click events
+ * ```javascript
+ * const click$ = fromEvent(document, 'click');
+ * const one$ = click$.pipe(mapTo(1));
  * const seed = 0;
- * const count$ = one$.mergeScan((acc, one) => Rx.Observable.of(acc + one), seed);
+ * const count$ = one$.pipe(
+ *   mergeScan((acc, one) => of(acc + one), seed),
+ * );
  * count$.subscribe(x => console.log(x));
  *
  * // Results:
@@ -30,6 +34,7 @@ import { ObservableInput, OperatorFunction } from '../types';
  * 3
  * 4
  * // ...and so on for each click
+ * ```
  *
  * @param {function(acc: R, value: T): Observable<R>} accumulator
  * The accumulator function called on each source value.
@@ -95,7 +100,10 @@ export class MergeScanSubscriber<T, R> extends OuterSubscriber<T, R> {
   }
 
   private _innerSub(ish: any, value: T, index: number): void {
-    this.add(subscribeToResult<T, R>(this, ish, value, index));
+    const innerSubscriber = new InnerSubscriber(this, undefined, undefined);
+    const destination = this.destination as Subscription;
+    destination.add(innerSubscriber);
+    subscribeToResult<T, R>(this, ish, value, index, innerSubscriber);
   }
 
   protected _complete(): void {
@@ -106,6 +114,7 @@ export class MergeScanSubscriber<T, R> extends OuterSubscriber<T, R> {
       }
       this.destination.complete();
     }
+    this.unsubscribe();
   }
 
   notifyNext(outerValue: T, innerValue: R,
@@ -119,7 +128,8 @@ export class MergeScanSubscriber<T, R> extends OuterSubscriber<T, R> {
 
   notifyComplete(innerSub: Subscription): void {
     const buffer = this.buffer;
-    this.remove(innerSub);
+    const destination = this.destination as Subscription;
+    destination.remove(innerSub);
     this.active--;
     if (buffer.length > 0) {
       this._next(buffer.shift());

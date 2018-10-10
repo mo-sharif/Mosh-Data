@@ -16,7 +16,7 @@ export function exhaust<R>(): OperatorFunction<any, R>;
  * <span class="informal">Flattens an Observable-of-Observables by dropping the
  * next inner Observables while the current inner is still executing.</span>
  *
- * <img src="./img/exhaust.png" width="100%">
+ * ![](exhaust.png)
  *
  * `exhaust` subscribes to an Observable that emits Observables, also known as a
  * higher-order Observable. Each time it observes one of these emitted inner
@@ -26,15 +26,21 @@ export function exhaust<R>(): OperatorFunction<any, R>;
  * not yet completed. Once that one completes, it will accept and flatten the
  * next inner Observable and repeat this process.
  *
- * @example <caption>Run a finite timer for each click, only if there is no currently active timer</caption>
- * var clicks = Rx.Observable.fromEvent(document, 'click');
- * var higherOrder = clicks.map((ev) => Rx.Observable.interval(1000).take(5));
- * var result = higherOrder.exhaust();
+ * ## Example
+ * Run a finite timer for each click, only if there is no currently active timer
+ * ```javascript
+ * const clicks = fromEvent(document, 'click');
+ * const higherOrder = clicks.pipe(
+ *   map((ev) => interval(1000).pipe(take(5))),
+ * );
+ * const result = higherOrder.pipe(exhaust());
  * result.subscribe(x => console.log(x));
+ * ```
  *
  * @see {@link combineAll}
  * @see {@link concatAll}
- * @see {@link switch}
+ * @see {@link switchAll}
+ * @see {@link switchMap}
  * @see {@link mergeAll}
  * @see {@link exhaustMap}
  * @see {@link zipAll}

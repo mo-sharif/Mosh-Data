@@ -6,32 +6,15 @@ import { Subscription } from './Subscription';
 import { rxSubscriber as rxSubscriberSymbol } from '../internal/symbol/rxSubscriber';
 import { config } from './config';
 import { hostReportError } from './util/hostReportError';
-/**
- * Implements the {@link Observer} interface and extends the
- * {@link Subscription} class. While the {@link Observer} is the public API for
- * consuming the values of an {@link Observable}, all Observers get converted to
- * a Subscriber, in order to provide Subscription-like capabilities such as
- * `unsubscribe`. Subscriber is a common type in RxJS, and crucial for
- * implementing operators, but it is rarely used as a public API.
- *
- * @class Subscriber<T>
- */
 var Subscriber = /*@__PURE__*/ (function (_super) {
     tslib_1.__extends(Subscriber, _super);
-    /**
-     * @param {Observer|function(value: T): void} [destinationOrNext] A partially
-     * defined Observer or a `next` callback function.
-     * @param {function(e: ?any): void} [error] The `error` callback of an
-     * Observer.
-     * @param {function(): void} [complete] The `complete` callback of an
-     * Observer.
-     */
     function Subscriber(destinationOrNext, error, complete) {
         var _this = _super.call(this) || this;
-        /** @internal */ _this.syncErrorValue = null;
-        /** @internal */ _this.syncErrorThrown = false;
-        /** @internal */ _this.syncErrorThrowable = false;
+        _this.syncErrorValue = null;
+        _this.syncErrorThrown = false;
+        _this.syncErrorThrowable = false;
         _this.isStopped = false;
+        _this._parentSubscription = null;
         switch (arguments.length) {
             case 0:
                 _this.destination = emptyObserver;
@@ -42,13 +25,10 @@ var Subscriber = /*@__PURE__*/ (function (_super) {
                     break;
                 }
                 if (typeof destinationOrNext === 'object') {
-                    // HACK(benlesh): For situations where Node has multiple copies of rxjs in
-                    // node_modules, we cannot rely on `instanceof` checks
-                    if (isTrustedSubscriber(destinationOrNext)) {
-                        var trustedSubscriber = destinationOrNext[rxSubscriberSymbol]();
-                        _this.syncErrorThrowable = trustedSubscriber.syncErrorThrowable;
-                        _this.destination = trustedSubscriber;
-                        trustedSubscriber.add(_this);
+                    if (destinationOrNext instanceof Subscriber) {
+                        _this.syncErrorThrowable = destinationOrNext.syncErrorThrowable;
+                        _this.destination = destinationOrNext;
+                        destinationOrNext.add(_this);
                     }
                     else {
                         _this.syncErrorThrowable = true;
@@ -64,54 +44,22 @@ var Subscriber = /*@__PURE__*/ (function (_super) {
         return _this;
     }
     Subscriber.prototype[rxSubscriberSymbol] = function () { return this; };
-    /**
-     * A static factory for a Subscriber, given a (potentially partial) definition
-     * of an Observer.
-     * @param {function(x: ?T): void} [next] The `next` callback of an Observer.
-     * @param {function(e: ?any): void} [error] The `error` callback of an
-     * Observer.
-     * @param {function(): void} [complete] The `complete` callback of an
-     * Observer.
-     * @return {Subscriber<T>} A Subscriber wrapping the (partially defined)
-     * Observer represented by the given arguments.
-     * @nocollapse
-     */
     Subscriber.create = function (next, error, complete) {
         var subscriber = new Subscriber(next, error, complete);
         subscriber.syncErrorThrowable = false;
         return subscriber;
     };
-    /**
-     * The {@link Observer} callback to receive notifications of type `next` from
-     * the Observable, with a value. The Observable may call this method 0 or more
-     * times.
-     * @param {T} [value] The `next` value.
-     * @return {void}
-     */
     Subscriber.prototype.next = function (value) {
         if (!this.isStopped) {
             this._next(value);
         }
     };
-    /**
-     * The {@link Observer} callback to receive notifications of type `error` from
-     * the Observable, with an attached {@link Error}. Notifies the Observer that
-     * the Observable has experienced an error condition.
-     * @param {any} [err] The `error` exception.
-     * @return {void}
-     */
     Subscriber.prototype.error = function (err) {
         if (!this.isStopped) {
             this.isStopped = true;
             this._error(err);
         }
     };
-    /**
-     * The {@link Observer} callback to receive a valueless notification of type
-     * `complete` from the Observable. Notifies the Observer that the Observable
-     * has finished sending push-based notifications.
-     * @return {void}
-     */
     Subscriber.prototype.complete = function () {
         if (!this.isStopped) {
             this.isStopped = true;
@@ -136,7 +84,6 @@ var Subscriber = /*@__PURE__*/ (function (_super) {
         this.destination.complete();
         this.unsubscribe();
     };
-    /** @deprecated This is an internal implementation detail, do not use. */
     Subscriber.prototype._unsubscribeAndRecycle = function () {
         var _a = this, _parent = _a._parent, _parents = _a._parents;
         this._parent = null;
@@ -146,16 +93,12 @@ var Subscriber = /*@__PURE__*/ (function (_super) {
         this.isStopped = false;
         this._parent = _parent;
         this._parents = _parents;
+        this._parentSubscription = null;
         return this;
     };
     return Subscriber;
 }(Subscription));
 export { Subscriber };
-/**
- * We need this JSDoc comment for affecting ESDoc.
- * @ignore
- * @extends {Ignored}
- */
 var SafeSubscriber = /*@__PURE__*/ (function (_super) {
     tslib_1.__extends(SafeSubscriber, _super);
     function SafeSubscriber(_parentSubscriber, observerOrNext, error, complete) {
@@ -282,7 +225,6 @@ var SafeSubscriber = /*@__PURE__*/ (function (_super) {
         }
         return false;
     };
-    /** @deprecated This is an internal implementation detail, do not use. */
     SafeSubscriber.prototype._unsubscribe = function () {
         var _parentSubscriber = this._parentSubscriber;
         this._context = null;
@@ -291,7 +233,5 @@ var SafeSubscriber = /*@__PURE__*/ (function (_super) {
     };
     return SafeSubscriber;
 }(Subscriber));
-function isTrustedSubscriber(obj) {
-    return obj instanceof Subscriber || ('syncErrorThrowable' in obj && obj[rxSubscriberSymbol]);
-}
+export { SafeSubscriber };
 //# sourceMappingURL=Subscriber.js.map

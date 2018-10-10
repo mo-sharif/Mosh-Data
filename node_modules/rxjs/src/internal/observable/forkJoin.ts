@@ -36,7 +36,7 @@ export function forkJoin<T>(...sources: ObservableInput<T>[]): Observable<T[]>;
  *
  * <span class="informal">Wait for Observables to complete and then combine last values they emitted.</span>
  *
- * <img src="./img/forkJoin.png" width="100%">
+ * ![](forkJoin.png)
  *
  * `forkJoin` is an operator that takes any number of Observables which can be passed either as an array
  * or directly as arguments. If no input Observables are provided, resulting stream will complete
@@ -67,61 +67,67 @@ export function forkJoin<T>(...sources: ObservableInput<T>[]): Observable<T[]>;
  * all its arguments and puts them into an array. Note that project function will be called only
  * when output Observable is supposed to emit a result.
  *
- * @example <caption>Use forkJoin with operator emitting immediately</caption>
+ * ## Examples
+ * ### Use forkJoin with operator emitting immediately
+ * ```javascript
  * import { forkJoin, of } from 'rxjs';
  *
  * const observable = forkJoin(
  *   of(1, 2, 3, 4),
- *   of(5, 6, 7, 8)
+ *   of(5, 6, 7, 8),
  * );
  * observable.subscribe(
  *   value => console.log(value),
  *   err => {},
- *   () => console.log('This is how it ends!')
+ *   () => console.log('This is how it ends!'),
  * );
  *
  * // Logs:
  * // [4, 8]
  * // "This is how it ends!"
+ * ```
  *
- *
- * @example <caption>Use forkJoin with operator emitting after some time</caption>
+ * ### Use forkJoin with operator emitting after some time
+ * ```javascript
  * import { forkJoin, interval } from 'rxjs';
  * import { take } from 'rxjs/operators';
  *
  * const observable = forkJoin(
  *   interval(1000).pipe(take(3)), // emit 0, 1, 2 every second and complete
- *   interval(500).pipe(take(4)) // emit 0, 1, 2, 3 every half a second and complete
+ *   interval(500).pipe(take(4)),  // emit 0, 1, 2, 3 every half a second and complete
  * );
  * observable.subscribe(
  *   value => console.log(value),
  *   err => {},
- *   () => console.log('This is how it ends!')
+ *   () => console.log('This is how it ends!'),
  * );
  *
  * // Logs:
  * // [2, 3] after 3 seconds
  * // "This is how it ends!" immediately after
+ * ```
  *
- *
- * @example <caption>Use forkJoin with project function</caption>
- * import { jorkJoin, interval } from 'rxjs';
+ * ### Use forkJoin with project function
+ * ```javascript
+ * import { forkJoin, interval } from 'rxjs';
  * import { take } from 'rxjs/operators';
  *
  * const observable = forkJoin(
  *   interval(1000).pipe(take(3)), // emit 0, 1, 2 every second and complete
- *   interval(500).pipe(take(4)), // emit 0, 1, 2, 3 every half a second and complete
- *   (n, m) => n + m
+ *   interval(500).pipe(take(4)),  // emit 0, 1, 2, 3 every half a second and complete
+ * ).pipe(
+ *   map(([n, m]) => n + m),
  * );
  * observable.subscribe(
  *   value => console.log(value),
  *   err => {},
- *   () => console.log('This is how it ends!')
+ *   () => console.log('This is how it ends!'),
  * );
  *
  * // Logs:
  * // 5 after 3 seconds
  * // "This is how it ends!" immediately after
+ * ```
  *
  * @see {@link combineLatest}
  * @see {@link zip}

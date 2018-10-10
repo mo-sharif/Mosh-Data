@@ -4,22 +4,18 @@ import { Observable } from '../Observable';
 import { Subscription } from '../Subscription';
 import { SubscriptionLoggable } from './SubscriptionLoggable';
 import { applyMixins } from '../util/applyMixins';
-/**
- * We need this JSDoc comment for affecting ESDoc.
- * @ignore
- * @extends {Ignored}
- */
 var ColdObservable = /*@__PURE__*/ (function (_super) {
     tslib_1.__extends(ColdObservable, _super);
     function ColdObservable(messages, scheduler) {
         var _this = _super.call(this, function (subscriber) {
             var observable = this;
             var index = observable.logSubscribedFrame();
-            subscriber.add(new Subscription(function () {
+            var subscription = new Subscription();
+            subscription.add(new Subscription(function () {
                 observable.logUnsubscribedFrame(index);
             }));
             observable.scheduleMessages(subscriber);
-            return subscriber;
+            return subscription;
         }) || this;
         _this.messages = messages;
         _this.subscriptions = [];

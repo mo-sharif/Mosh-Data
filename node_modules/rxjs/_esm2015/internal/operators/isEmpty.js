@@ -7,11 +7,6 @@ class IsEmptyOperator {
         return source.subscribe(new IsEmptySubscriber(observer));
     }
 }
-/**
- * We need this JSDoc comment for affecting ESDoc.
- * @ignore
- * @extends {Ignored}
- */
 class IsEmptySubscriber extends Subscriber {
     constructor(destination) {
         super(destination);

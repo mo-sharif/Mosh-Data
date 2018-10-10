@@ -1,11 +1,6 @@
 /** PURE_IMPORTS_START tslib,_Subscription PURE_IMPORTS_END */
 import * as tslib_1 from "tslib";
 import { Subscription } from './Subscription';
-/**
- * We need this JSDoc comment for affecting ESDoc.
- * @ignore
- * @extends {Ignored}
- */
 var SubjectSubscription = /*@__PURE__*/ (function (_super) {
     tslib_1.__extends(SubjectSubscription, _super);
     function SubjectSubscription(subject, subscriber) {

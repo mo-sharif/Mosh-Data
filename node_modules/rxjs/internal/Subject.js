@@ -1,8 +1,11 @@
 "use strict";
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    }
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -16,10 +19,7 @@ var Subscription_1 = require("./Subscription");
 var ObjectUnsubscribedError_1 = require("./util/ObjectUnsubscribedError");
 var SubjectSubscription_1 = require("./SubjectSubscription");
 var rxSubscriber_1 = require("../internal/symbol/rxSubscriber");
-/**
- * @class SubjectSubscriber<T>
- */
-var SubjectSubscriber = /** @class */ (function (_super) {
+var SubjectSubscriber = (function (_super) {
     __extends(SubjectSubscriber, _super);
     function SubjectSubscriber(destination) {
         var _this = _super.call(this, destination) || this;
@@ -29,10 +29,7 @@ var SubjectSubscriber = /** @class */ (function (_super) {
     return SubjectSubscriber;
 }(Subscriber_1.Subscriber));
 exports.SubjectSubscriber = SubjectSubscriber;
-/**
- * @class Subject<T>
- */
-var Subject = /** @class */ (function (_super) {
+var Subject = (function (_super) {
     __extends(Subject, _super);
     function Subject() {
         var _this = _super.call(this) || this;
@@ -97,7 +94,6 @@ var Subject = /** @class */ (function (_super) {
         this.closed = true;
         this.observers = null;
     };
-    /** @deprecated This is an internal implementation detail, do not use. */
     Subject.prototype._trySubscribe = function (subscriber) {
         if (this.closed) {
             throw new ObjectUnsubscribedError_1.ObjectUnsubscribedError();
@@ -106,7 +102,6 @@ var Subject = /** @class */ (function (_super) {
             return _super.prototype._trySubscribe.call(this, subscriber);
         }
     };
-    /** @deprecated This is an internal implementation detail, do not use. */
     Subject.prototype._subscribe = function (subscriber) {
         if (this.closed) {
             throw new ObjectUnsubscribedError_1.ObjectUnsubscribedError();
@@ -129,17 +124,13 @@ var Subject = /** @class */ (function (_super) {
         observable.source = this;
         return observable;
     };
-    /**@nocollapse */
     Subject.create = function (destination, source) {
         return new AnonymousSubject(destination, source);
     };
     return Subject;
 }(Observable_1.Observable));
 exports.Subject = Subject;
-/**
- * @class AnonymousSubject<T>
- */
-var AnonymousSubject = /** @class */ (function (_super) {
+var AnonymousSubject = (function (_super) {
     __extends(AnonymousSubject, _super);
     function AnonymousSubject(destination, source) {
         var _this = _super.call(this) || this;
@@ -165,7 +156,6 @@ var AnonymousSubject = /** @class */ (function (_super) {
             this.destination.complete();
         }
     };
-    /** @deprecated This is an internal implementation detail, do not use. */
     AnonymousSubject.prototype._subscribe = function (subscriber) {
         var source = this.source;
         if (source) {

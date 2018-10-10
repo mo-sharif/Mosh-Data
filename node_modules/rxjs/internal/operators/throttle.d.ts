@@ -12,7 +12,7 @@ export declare const defaultThrottleConfig: ThrottleConfig;
  * <span class="informal">It's like {@link throttleTime}, but the silencing
  * duration is determined by a second Observable.</span>
  *
- * <img src="./img/throttle.png" width="100%">
+ * ![](throttle.png)
  *
  * `throttle` emits the source Observable values on the output Observable
  * when its internal timer is disabled, and ignores source values when the timer
@@ -23,10 +23,13 @@ export declare const defaultThrottleConfig: ThrottleConfig;
  * value or completes, the timer is disabled, and this process repeats for the
  * next source value.
  *
- * @example <caption>Emit clicks at a rate of at most one click per second</caption>
- * var clicks = Rx.Observable.fromEvent(document, 'click');
- * var result = clicks.throttle(ev => Rx.Observable.interval(1000));
+ * ## Example
+ * Emit clicks at a rate of at most one click per second
+ * ```javascript
+ * const clicks = fromEvent(document, 'click');
+ * const result = clicks.pipe(throttle(ev => interval(1000)));
  * result.subscribe(x => console.log(x));
+ * ```
  *
  * @see {@link audit}
  * @see {@link debounce}

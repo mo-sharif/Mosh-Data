@@ -7,7 +7,7 @@ import { OperatorFunction } from '../types';
  * <span class="informal">Unwraps {@link Notification} objects as actual `next`,
  * `error` and `complete` emissions. The opposite of {@link materialize}.</span>
  *
- * <img src="./img/dematerialize.png" width="100%">
+ * ![](dematerialize.png)
  *
  * `dematerialize` is assumed to operate an Observable that only emits
  * {@link Notification} objects as `next` emissions, and does not emit any
@@ -17,20 +17,23 @@ import { OperatorFunction } from '../types';
  *
  * Use this operator in conjunction with {@link materialize}.
  *
- * @example <caption>Convert an Observable of Notifications to an actual Observable</caption>
- * var notifA = new Rx.Notification('N', 'A');
- * var notifB = new Rx.Notification('N', 'B');
- * var notifE = new Rx.Notification('E', void 0,
+ * ## Example
+ * Convert an Observable of Notifications to an actual Observable
+ * ```javascript
+ * const notifA = new Notification('N', 'A');
+ * const notifB = new Notification('N', 'B');
+ * const notifE = new Notification('E', undefined,
  *   new TypeError('x.toUpperCase is not a function')
  * );
- * var materialized = Rx.Observable.of(notifA, notifB, notifE);
- * var upperCase = materialized.dematerialize();
+ * const materialized = of(notifA, notifB, notifE);
+ * const upperCase = materialized.pipe(dematerialize());
  * upperCase.subscribe(x => console.log(x), e => console.error(e));
  *
  * // Results in:
  * // A
  * // B
  * // TypeError: x.toUpperCase is not a function
+ * ```
  *
  * @see {@link Notification}
  * @see {@link materialize}

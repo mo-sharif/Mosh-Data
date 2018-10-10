@@ -1,8 +1,5 @@
 import { Subject } from './Subject';
 import { Subscription } from './Subscription';
-/**
- * @class AsyncSubject<T>
- */
 export class AsyncSubject extends Subject {
     constructor() {
         super(...arguments);
@@ -10,7 +7,6 @@ export class AsyncSubject extends Subject {
         this.hasNext = false;
         this.hasCompleted = false;
     }
-    /** @deprecated This is an internal implementation detail, do not use. */
     _subscribe(subscriber) {
         if (this.hasError) {
             subscriber.error(this.thrownError);

@@ -14,7 +14,7 @@ import { take } from './take';
  *
  * <span class="informal">Emits only the i-th value, then completes.</span>
  *
- * <img src="./img/elementAt.png" width="100%">
+ * ![](elementAt.png)
  *
  * `elementAt` returns an Observable that emits the item at the specified
  * `index` in the source Observable, or a default value if that `index` is out
@@ -22,15 +22,18 @@ import { take } from './take';
  * not given and the `index` is out of range, the output Observable will emit an
  * `ArgumentOutOfRangeError` error.
  *
- * @example <caption>Emit only the third click event</caption>
- * var clicks = Rx.Observable.fromEvent(document, 'click');
- * var result = clicks.elementAt(2);
+ * ## Example
+ * Emit only the third click event
+ * ```javascript
+ * const clicks = fromEvent(document, 'click');
+ * const result = clicks.pipe(elementAt(2));
  * result.subscribe(x => console.log(x));
  *
  * // Results in:
  * // click 1 = nothing
  * // click 2 = nothing
  * // click 3 = MouseEvent object logged to console
+ * ```
  *
  * @see {@link first}
  * @see {@link last}

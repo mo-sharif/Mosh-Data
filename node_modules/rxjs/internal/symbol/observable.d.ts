@@ -1,7 +1,7 @@
 /** Symbol.observable addition */
-declare global  {
+declare global {
     interface SymbolConstructor {
-        observable: symbol;
+        readonly observable: symbol;
     }
 }
 /** Symbol.observable or a string "@@observable". Used for interop */

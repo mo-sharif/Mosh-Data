@@ -50,11 +50,6 @@ class CountedSubject extends Subject {
         return this._numberOfNextedValues;
     }
 }
-/**
- * We need this JSDoc comment for affecting ESDoc.
- * @ignore
- * @extends {Ignored}
- */
 class WindowTimeSubscriber extends Subscriber {
     constructor(destination, windowTimeSpan, windowCreationInterval, maxWindowSize, scheduler) {
         super(destination);

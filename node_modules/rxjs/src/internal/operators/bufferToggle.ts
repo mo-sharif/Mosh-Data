@@ -15,19 +15,24 @@ import { OperatorFunction, SubscribableOrPromise } from '../types';
  * collecting only when `opening` emits, and calls the `closingSelector`
  * function to get an Observable that tells when to close the buffer.</span>
  *
- * <img src="./img/bufferToggle.png" width="100%">
+ * ![](bufferToggle.png)
  *
  * Buffers values from the source by opening the buffer via signals from an
  * Observable provided to `openings`, and closing and sending the buffers when
  * a Subscribable or Promise returned by the `closingSelector` function emits.
  *
- * @example <caption>Every other second, emit the click events from the next 500ms</caption>
- * var clicks = Rx.Observable.fromEvent(document, 'click');
- * var openings = Rx.Observable.interval(1000);
- * var buffered = clicks.bufferToggle(openings, i =>
- *   i % 2 ? Rx.Observable.interval(500) : Rx.Observable.empty()
- * );
+ * ## Example
+ *
+ * Every other second, emit the click events from the next 500ms
+ *
+ * ```javascript
+ * const clicks = fromEvent(document, 'click');
+ * const openings = interval(1000);
+ * const buffered = clicks.pipe(bufferToggle(openings, i =>
+ *   i % 2 ? interval(500) : empty()
+ * ));
  * buffered.subscribe(x => console.log(x));
+ * ```
  *
  * @see {@link buffer}
  * @see {@link bufferCount}
