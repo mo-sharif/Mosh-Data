@@ -9,11 +9,11 @@ Mosh Data provides a universal UI solution to deal with multiple data requests l
 
 ## live demo
 
-[Live Demo](https://mosh-media.github.io/Mosh-Data "Check it out")
+[Live Demo](https://mo-sharif.github.io/Mosh-Data "Check it out")
 
-[Master tree](https://github.com/Mosh-Media/Mosh-Data "Check it out")
+[Master tree](https://github.com/mo-sharif/Mosh-Data "Check it out")
 
-[Prod tree](https://github.com/Mosh-Media/Mosh-Data/tree/gh-pages "Check it out")
+[Prod tree](https://github.com/mo-sharif/Mosh-Data/tree/gh-pages "Check it out")
 
 ## Todos
 
